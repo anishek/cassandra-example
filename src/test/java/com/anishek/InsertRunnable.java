@@ -6,6 +6,7 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.base.Stopwatch;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -15,11 +16,11 @@ public class InsertRunnable implements Callable<Long> {
     private long stop;
     private Session session;
 
-    public InsertRunnable(long start, long stop, Session session) {
+    public InsertRunnable(long start, long stop, Map<String, Object> otherArguments) {
         this.start = start;
         this.stop = stop;
         this.coordinates = new Coordinates();
-        this.session = session;
+        this.session = (Session) otherArguments.get(Constants.SESSION);
     }
 
     @Override
