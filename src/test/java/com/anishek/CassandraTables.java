@@ -59,5 +59,4 @@ public class CassandraTables {
         }
         System.out.println("Average for " + NUM_OF_RUNS + " runs: " + averageTotal / NUM_OF_RUNS);
     }
-
 }

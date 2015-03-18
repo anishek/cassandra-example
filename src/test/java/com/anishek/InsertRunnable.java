@@ -39,6 +39,7 @@ public class InsertRunnable implements Callable<Long> {
             session.execute(statement);
         }
         stopwatch.stop();
+        localhost.close();
         return stopwatch.elapsed(TimeUnit.MILLISECONDS);
     }
 }
