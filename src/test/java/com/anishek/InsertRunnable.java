@@ -1,6 +1,5 @@
 package com.anishek;
 
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -14,19 +13,18 @@ public class InsertRunnable implements Callable<Long> {
     private final Coordinates coordinates;
     private long start;
     private long stop;
+    private Session session;
 
-    public InsertRunnable(long start, long stop) {
+    public InsertRunnable(long start, long stop, Session session) {
         this.start = start;
         this.stop = stop;
         this.coordinates = new Coordinates();
+        this.session = session;
     }
 
     @Override
     public Long call() throws Exception {
-        Cluster localhost = Cluster.builder().addContactPoint("localhost").build();
-        Session session = localhost.connect("test");
         Stopwatch stopwatch = Stopwatch.createStarted();
-
         for (long i = start; i < stop; i++) {
             Statement statement = QueryBuilder.insertInto("test", "t1")
                     .value("id", i)
@@ -39,7 +37,6 @@ public class InsertRunnable implements Callable<Long> {
             session.execute(statement);
         }
         stopwatch.stop();
-        localhost.close();
         return stopwatch.elapsed(TimeUnit.MILLISECONDS);
     }
 }

@@ -48,15 +48,18 @@ public class CassandraTables {
     @Test
     public void findAverage() throws Exception {
         recreateKeyspace();
+        Session testSession = localhost.connect("test");
         long averageTotal = 0;
         int NUM_OF_RUNS = 50;
         int NUM_OF_THREADS = 10;
+
         for (int i = 0; i < NUM_OF_RUNS; i++) {
-            Threaded threaded = new Threaded(NUMBER_OF_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertRunnable.class));
+            Threaded threaded = new Threaded(NUMBER_OF_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertRunnable.class, testSession));
             long runTime = threaded.run();
             averageTotal += runTime;
             System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + NUMBER_OF_RECORDS + " records : " + runTime);
         }
         System.out.println("Average for " + NUM_OF_RUNS + " runs: " + averageTotal / NUM_OF_RUNS);
+        testSession.close();
     }
 }
