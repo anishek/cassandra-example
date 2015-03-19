@@ -40,7 +40,7 @@ public class InsertSamePartitionRunnable implements Callable<Long> {
                         .value("a", k);
                 Stopwatch watch = Stopwatch.createStarted();
                 session.execute(statement);
-                time += watch.elapsed(TimeUnit.MILLISECONDS);
+                time += watch.elapsed(TimeUnit.MICROSECONDS);
             }
         }
         return time / ((stop - start) * entriesPerPartition);
