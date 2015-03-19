@@ -90,9 +90,9 @@ public class CassandraTables {
         Session testSession = localhost.connect("test");
         long averageTotal = 0;
 
-        int NUM_OF_RUNS = 20;
-        int NUM_OF_THREADS = 50;
-        long NUMBER_OF_PARTITION_RECORDS = 2000;
+        int NUM_OF_RUNS = 10;
+        int NUM_OF_THREADS = 25;
+        long NUMBER_OF_PARTITION_RECORDS = 4000;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
