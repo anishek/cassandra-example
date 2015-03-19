@@ -27,7 +27,7 @@ public class InsertSamePartitionRunnable implements Callable<Long> {
 
     @Override
     public Long call() throws Exception {
-        Stopwatch stopwatch = Stopwatch.createStarted();
+        long time = 0;
         for (long i = start; i < stop; i++) {
             for (long k = 0; k < entriesPerPartition; k++) {
                 Statement statement = QueryBuilder.insertInto("test", "t1")
@@ -38,10 +38,11 @@ public class InsertSamePartitionRunnable implements Callable<Long> {
                         .value("lat", coordinates.lat())
                         .value("lon", coordinates.lon())
                         .value("a", k);
+                Stopwatch watch = Stopwatch.createStarted();
                 session.execute(statement);
+                time += watch.elapsed(TimeUnit.MILLISECONDS);
             }
         }
-        stopwatch.stop();
-        return stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        return time / ((stop - start) * entriesPerPartition);
     }
 }

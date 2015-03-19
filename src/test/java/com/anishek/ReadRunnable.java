@@ -46,7 +46,7 @@ public class ReadRunnable implements Callable<ReadRunnable.ReadResult> {
         }
         stopwatch.stop();
         ReadResult readResult = new ReadResult();
-        readResult.timeTaken = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        readResult.timeTaken = stopwatch.elapsed(TimeUnit.MILLISECONDS) / (readOperationsPerKey * (stop - start));
         readResult.averageRowsRead = rowsRead / (readOperationsPerKey * (stop - start));
         return readResult;
     }
