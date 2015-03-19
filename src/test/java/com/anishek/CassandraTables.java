@@ -90,13 +90,13 @@ public class CassandraTables {
         Session testSession = localhost.connect("test");
         long averageTotal = 0;
 
-        int NUM_OF_RUNS = 10;
-        int NUM_OF_THREADS = 30;
-        long NUMBER_OF_PARTITION_RECORDS = 3000;
+        int NUM_OF_RUNS = 20;
+        int NUM_OF_THREADS = 50;
+        long NUMBER_OF_PARTITION_RECORDS = 2000;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
-        otherArguments.put(Constants.ENTRIES_PER_PARTITION, 30);
+        otherArguments.put(Constants.ENTRIES_PER_PARTITION, 300);
         System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + NUMBER_OF_PARTITION_RECORDS + " records.");
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(NUMBER_OF_PARTITION_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertSamePartitionRunnable.class, otherArguments));
