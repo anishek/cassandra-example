@@ -92,7 +92,7 @@ public class CassandraTables {
 
         int NUM_OF_RUNS = 10;
         int NUM_OF_THREADS = 30;
-        long NUMBER_OF_PARTITION_RECORDS = 30000;
+        long NUMBER_OF_PARTITION_RECORDS = 3000;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
