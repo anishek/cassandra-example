@@ -4,12 +4,14 @@ import com.anishek.threading.*;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
+import com.google.common.base.Stopwatch;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -93,16 +95,20 @@ public class CassandraTables {
         int NUM_OF_RUNS = 10;
         int NUM_OF_THREADS = 25;
         long NUMBER_OF_PARTITION_RECORDS = 4000;
+        int NUMBER_OF_ENTIIES_PER_PARTITION = 300;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
-        otherArguments.put(Constants.ENTRIES_PER_PARTITION, 300);
+        otherArguments.put(Constants.ENTRIES_PER_PARTITION, NUMBER_OF_ENTIIES_PER_PARTITION);
         System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + NUMBER_OF_PARTITION_RECORDS + " records.");
+        Stopwatch started = Stopwatch.createStarted();
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(NUMBER_OF_PARTITION_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertSamePartitionRunnable.class, otherArguments));
             List run = threaded.run(new DefaultCallback());
             averageTotal += new AverageTimeEvaluation().eval(run);
         }
+        long elapsed = started.elapsed(TimeUnit.SECONDS);
+        System.out.print("total time taken in sec: " + elapsed + " for " + (NUM_OF_RUNS * NUMBER_OF_PARTITION_RECORDS * NUMBER_OF_ENTIIES_PER_PARTITION));
         System.out.println("Average for 1 record entry over " + NUM_OF_RUNS + " runs: " + averageTotal / NUM_OF_RUNS);
         testSession.close();
     }
