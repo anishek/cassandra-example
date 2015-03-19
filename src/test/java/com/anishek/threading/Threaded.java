@@ -1,5 +1,6 @@
-package com.anishek;
+package com.anishek.threading;
 
+import com.anishek.RunnerFactory;
 import com.google.common.util.concurrent.*;
 
 import java.util.ArrayList;
@@ -18,43 +19,25 @@ public class Threaded {
         this.factory = factory;
     }
 
-    public long run() throws Exception {
+    public <T extends FutureCallback> List run(T instance) throws Exception {
         ListeningExecutorService executorService = MoreExecutors.listeningDecorator(
                 Executors.newFixedThreadPool(numberOfThreads,
                         new ThreadFactoryBuilder().setNameFormat("%d").build()
                 ));
-        List<DefaultCallback> list = new ArrayList<DefaultCallback>();
+        List<FutureCallback> list = new ArrayList<FutureCallback>();
 
         long perThread = totalNumber / numberOfThreads;
         for (int i = 0; i < numberOfThreads; i++) {
-            ListenableFuture<Long> submit = executorService.submit(factory.create(i * perThread, (i + 1) * perThread));
-            DefaultCallback callback = new DefaultCallback();
-            list.add(callback);
-            Futures.addCallback(submit, callback);
+            ListenableFuture submit = executorService.submit(factory.create(i * perThread, (i + 1) * perThread));
+            FutureCallback futureCallback = instance.getClass().newInstance();
+            list.add(futureCallback);
+            Futures.addCallback(submit, futureCallback);
         }
         executorService.shutdown();
         executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-        long totalTimeTaken = 0;
-        for (DefaultCallback callback : list) {
-            totalTimeTaken += callback.timeTaken;
-        }
-        return totalTimeTaken / list.size();
+        return list;
     }
 
-    static class DefaultCallback implements FutureCallback<Long> {
-
-        long timeTaken;
-
-        @Override
-        public void onSuccess(Long aLong) {
-            timeTaken = aLong;
-        }
-
-        @Override
-        public void onFailure(Throwable throwable) {
-            throw new RuntimeException("Something failed", throwable);
-        }
-    }
 }
 
 

@@ -1,5 +1,6 @@
 package com.anishek;
 
+import com.anishek.threading.*;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
@@ -8,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -64,11 +66,12 @@ public class CassandraTables {
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
 
+        System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + NUMBER_OF_RECORDS + " records");
+
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(NUMBER_OF_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertRunnable.class, otherArguments));
-            long runTime = threaded.run();
-            averageTotal += runTime;
-            System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + NUMBER_OF_RECORDS + " records : " + runTime);
+            List run = threaded.run(new DefaultCallback());
+            averageTotal += new AverageTimeEvaluation().eval(run);
         }
         System.out.println("Average for " + NUM_OF_RUNS + " runs: " + averageTotal / NUM_OF_RUNS);
         testSession.close();
@@ -76,10 +79,10 @@ public class CassandraTables {
 
     /**
      * about 11000 QPS with some write acknowledgement failures when
-     *  int NUM_OF_RUNS = 3;
-     *  int NUM_OF_THREADS = 50;
-     *  long NUMBER_OF_PARTITION_RECORDS = 250;
-     *  ENTRIES_PER_PARTITION = 20000
+     * int NUM_OF_RUNS = 3;
+     * int NUM_OF_THREADS = 50;
+     * long NUMBER_OF_PARTITION_RECORDS = 250;
+     * ENTRIES_PER_PARTITION = 20000
      */
     @Test
     public void findAverageWithRecordsInsertAcrossLessPartitions() throws Exception {
@@ -94,15 +97,40 @@ public class CassandraTables {
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
         otherArguments.put(Constants.ENTRIES_PER_PARTITION, 20000);
-
+        System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + NUMBER_OF_PARTITION_RECORDS + " records.");
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(NUMBER_OF_PARTITION_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertSamePartitionRunnable.class, otherArguments));
-            long runTime = threaded.run();
-            averageTotal += runTime;
-            System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + NUMBER_OF_PARTITION_RECORDS + " records : " + runTime);
+            List run = threaded.run(new DefaultCallback());
+            averageTotal += new AverageTimeEvaluation().eval(run);
         }
         System.out.println("Average for " + NUM_OF_RUNS + " runs: " + averageTotal / NUM_OF_RUNS);
         testSession.close();
+    }
 
+
+    @Test
+    public void readAcrossThreads() throws Exception {
+        Session testSession = localhost.connect("test");
+        long averageTotal = 0;
+        long rowsRead = 0;
+
+        int NUM_OF_RUNS = 3;
+        int NUM_OF_THREADS = 50;
+        long NUMBER_OF_PARTITION_RECORDS = 250;
+
+        HashMap<String, Object> otherArguments = new HashMap<String, Object>();
+        otherArguments.put(Constants.SESSION, testSession);
+        otherArguments.put(Constants.READ_OPERATIONS_PER_KEY, 100);
+        otherArguments.put(Constants.ENTRIES_PER_PARTITION, 20000);
+
+        for (int i = 0; i < NUM_OF_RUNS; i++) {
+            Threaded threaded = new Threaded(NUMBER_OF_PARTITION_RECORDS, NUM_OF_THREADS, new RunnerFactory(ReadRunnable.class, otherArguments));
+            List list = threaded.run(new ReadCallback());
+            ReadRunnable.ReadResult result = new ReadEvaluation().eval(list);
+            averageTotal += result.timeTaken;
+            rowsRead += result.averageRowsRead;
+        }
+        System.out.println("Across Runs reading " + (rowsRead / NUM_OF_RUNS) + "average time taken: " + (averageTotal / NUM_OF_RUNS));
+        testSession.close();
     }
 }
