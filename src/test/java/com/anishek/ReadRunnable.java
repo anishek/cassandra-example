@@ -12,7 +12,8 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-public class ReadRunnable implements Callable<ReadRunnable.ReadResult> {
+public class ReadRunnable implements Callable<ReadResult> {
+    public static final String READ_OPERATIONS_PER_KEY = "readOperationsPerKey";
 
     private long start;
     private long stop;
@@ -26,7 +27,7 @@ public class ReadRunnable implements Callable<ReadRunnable.ReadResult> {
         this.start = start;
         this.stop = stop;
         this.session = (Session) otherArguments.get(Constants.SESSION);
-        this.readOperationsPerKey = new Long(otherArguments.get(Constants.READ_OPERATIONS_PER_KEY).toString());
+        this.readOperationsPerKey = new Long(otherArguments.get(READ_OPERATIONS_PER_KEY).toString());
         this.entriesPerPartition = new Long(otherArguments.get(Constants.ENTRIES_PER_PARTITION).toString());
     }
 
@@ -51,8 +52,4 @@ public class ReadRunnable implements Callable<ReadRunnable.ReadResult> {
         return readResult;
     }
 
-    public static class ReadResult {
-        public float averageRowsRead = 0;
-        public long timeTaken = 0;
-    }
 }

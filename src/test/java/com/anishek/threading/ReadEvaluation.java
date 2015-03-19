@@ -1,21 +1,21 @@
 package com.anishek.threading;
 
-import com.anishek.ReadRunnable;
+import com.anishek.ReadResult;
 
 import java.util.List;
 
-public class ReadEvaluation implements PerRunEvaluation<ReadRunnable.ReadResult> {
+public class ReadEvaluation implements PerRunEvaluation<ReadResult> {
     @Override
-    public ReadRunnable.ReadResult eval(List<ReturnValue<ReadRunnable.ReadResult>> list) {
+    public ReadResult eval(List<ReturnValue<ReadResult>> list) {
         long timeTaken = 0;
         long rowsRead = 0;
-        for (ReturnValue<ReadRunnable.ReadResult> result : list) {
-            ReadRunnable.ReadResult value = result.value();
+        for (ReturnValue<ReadResult> result : list) {
+            ReadResult value = result.value();
             System.out.println("Average time taken to read " + value.averageRowsRead + " is " + value.timeTaken);
             timeTaken += value.timeTaken;
             rowsRead += value.averageRowsRead;
         }
-        ReadRunnable.ReadResult result = new ReadRunnable.ReadResult();
+        ReadResult result = new ReadResult();
         result.timeTaken = timeTaken / list.size();
         result.averageRowsRead = rowsRead / list.size();
         return result;

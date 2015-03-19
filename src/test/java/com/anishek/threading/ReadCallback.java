@@ -1,13 +1,13 @@
 package com.anishek.threading;
 
-import com.anishek.ReadRunnable;
+import com.anishek.ReadResult;
 import com.google.common.util.concurrent.FutureCallback;
 
-public class ReadCallback implements FutureCallback<ReadRunnable.ReadResult>, ReturnValue<ReadRunnable.ReadResult> {
-    private ReadRunnable.ReadResult result;
+public class ReadCallback implements FutureCallback<ReadResult>, ReturnValue<ReadResult> {
+    private ReadResult result;
 
     @Override
-    public void onSuccess(ReadRunnable.ReadResult readResult) {
+    public void onSuccess(ReadResult readResult) {
         this.result = readResult;
     }
 
@@ -17,7 +17,7 @@ public class ReadCallback implements FutureCallback<ReadRunnable.ReadResult>, Re
     }
 
     @Override
-    public ReadRunnable.ReadResult value() {
+    public ReadResult value() {
         return result;
     }
 }
