@@ -11,8 +11,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ReadSpecificNumberOfRecords implements Callable<ReadResult> {
 
-    public static final String TOTAL_PARTITION_KEYS = "totalPartitionKeys";
-    public static final String RECORDS_TO_READ = "recordsToRead";
     private long start;
     private long stop;
     private Session session;
@@ -24,8 +22,8 @@ public class ReadSpecificNumberOfRecords implements Callable<ReadResult> {
         this.start = start;
         this.stop = stop;
         this.session = (Session) otherArguments.get(Constants.SESSION);
-        this.recordsToRead = new Integer(otherArguments.get(RECORDS_TO_READ).toString());
-        this.totalPartitionKeys = new Long(otherArguments.get(TOTAL_PARTITION_KEYS).toString());
+        this.recordsToRead = new Integer(otherArguments.get(Constants.RECORDS_TO_READ).toString());
+        this.totalPartitionKeys = new Long(otherArguments.get(Constants.TOTAL_PARTITION_KEYS).toString());
     }
 
 

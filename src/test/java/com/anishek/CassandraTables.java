@@ -148,13 +148,12 @@ public class CassandraTables {
 
         int NUM_OF_RUNS = 10;
         int NUM_OF_THREADS = 20;
-//        long TOTAL_NUMBER_OF_READ_OPERATIONS = 10000000;
         long TOTAL_NUMBER_OF_READ_OPERATIONS = 100000;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
-        otherArguments.put(ReadSpecificNumberOfRecords.RECORDS_TO_READ, 10);
-        otherArguments.put(ReadSpecificNumberOfRecords.TOTAL_PARTITION_KEYS, 4000);
+        otherArguments.put(Constants.RECORDS_TO_READ, 10);
+        otherArguments.put(Constants.TOTAL_PARTITION_KEYS, 4000);
 
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(TOTAL_NUMBER_OF_READ_OPERATIONS, NUM_OF_THREADS,
@@ -163,6 +162,32 @@ public class CassandraTables {
             ReadResult result = new ReadEvaluation().eval(list);
             averageTotal += result.timeTaken;
             System.out.println("time taken for reading one record when reading " + TOTAL_NUMBER_OF_READ_OPERATIONS + " records in run: " + result.timeTaken);
+        }
+        System.out.println("Across Runs average time taken to read one record: " + (averageTotal / NUM_OF_RUNS));
+        testSession.close();
+    }
+
+    @Test
+    public void readWriteOperationsWithUpdatesHavingAPercentage() throws Exception {
+        Session testSession = localhost.connect("test");
+        long averageTotal = 0;
+
+        int NUM_OF_RUNS = 10;
+        int NUM_OF_THREADS = 20;
+        long TOTAL_NUMBER_OF_READ_OPERATIONS = 100000;
+
+        HashMap<String, Object> otherArguments = new HashMap<String, Object>();
+        otherArguments.put(Constants.SESSION, testSession);
+        otherArguments.put(Constants.TOTAL_PARTITION_KEYS, 4000);
+        otherArguments.put(ReadWriteRunnable.UPDATE_EXISTING_PERCENTAGE, 0.7);
+
+        for (int i = 0; i < NUM_OF_RUNS; i++) {
+            Threaded threaded = new Threaded(TOTAL_NUMBER_OF_READ_OPERATIONS, NUM_OF_THREADS,
+                    new RunnerFactory(ReadWriteRunnable.class, otherArguments));
+            List list = threaded.run(new ReadCallback());
+            Long timeTaken = new AverageTimeEvaluation().eval(list);
+            averageTotal += timeTaken;
+            System.out.println("time taken for reading one record when reading " + TOTAL_NUMBER_OF_READ_OPERATIONS + " records in run: " + timeTaken);
         }
         System.out.println("Across Runs average time taken to read one record: " + (averageTotal / NUM_OF_RUNS));
         testSession.close();
