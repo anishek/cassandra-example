@@ -3,6 +3,8 @@ package com.anishek;
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.Statement;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.base.Stopwatch;
 
 import java.util.Map;
@@ -32,15 +34,15 @@ public class ReadSpecificNumberOfRecords implements Callable<ReadResult> {
     @Override
     public ReadResult call() throws Exception {
         long timePerReadInMicro = 0;
-        PreparedStatement prepare = session.prepare("select * From test.t1 where id=? order by ts desc limit ?");
         for (long i = start; i < stop; i++) {
             long partitionId = i % totalPartitionKeys;
-//            Statement statement = QueryBuilder.select()
-//                    .all().from("test", "t1")
-//                    .where(QueryBuilder.eq("id", partitionId))
-//                    .limit(recordsToRead);
+            Statement statement = QueryBuilder.select()
+                    .all().from("test", "t1")
+                    .where(QueryBuilder.eq("id", partitionId))
+                    .orderBy(QueryBuilder.asc("ts"))
+                    .limit(recordsToRead);
             Stopwatch stopwatch = Stopwatch.createStarted();
-            session.execute(new BoundStatement(prepare).bind(partitionId, recordsToRead));
+            session.execute(statement);
             timePerReadInMicro += stopwatch.elapsed(TimeUnit.MICROSECONDS);
         }
         ReadResult readResult = new ReadResult();
