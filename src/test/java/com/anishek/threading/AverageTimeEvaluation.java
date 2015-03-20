@@ -11,7 +11,6 @@ public class AverageTimeEvaluation implements PerRunEvaluation<Long> {
             totalTimeTaken += returnValue.value();
         }
         long runtime = totalTimeTaken / list.size();
-        System.out.println("Average time: " + runtime);
         return runtime;
     }
 }

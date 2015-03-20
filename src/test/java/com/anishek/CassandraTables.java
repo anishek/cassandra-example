@@ -73,7 +73,9 @@ public class CassandraTables {
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(NUMBER_OF_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertRunnable.class, otherArguments));
             List run = threaded.run(new DefaultCallback());
-            averageTotal += new AverageTimeEvaluation().eval(run);
+            Long time = new AverageTimeEvaluation().eval(run);
+            averageTotal += time;
+            System.out.println("Average time: " + time);
         }
         System.out.println("Average for " + NUM_OF_RUNS + " runs: " + averageTotal / NUM_OF_RUNS);
         testSession.close();
@@ -105,7 +107,9 @@ public class CassandraTables {
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(NUMBER_OF_PARTITION_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertSamePartitionRunnable.class, otherArguments));
             List run = threaded.run(new DefaultCallback());
-            averageTotal += new AverageTimeEvaluation().eval(run);
+            Long time = new AverageTimeEvaluation().eval(run);
+            averageTotal += time;
+            System.out.println("Average time: " + time);
         }
         long elapsed = started.elapsed(TimeUnit.SECONDS);
         System.out.print("total time taken in sec: " + elapsed + " for " + (NUM_OF_RUNS * NUMBER_OF_PARTITION_RECORDS * NUMBER_OF_ENTRIES_PER_PARTITION));
