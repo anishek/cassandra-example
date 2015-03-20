@@ -49,7 +49,6 @@ public class ReadWriteRunnable implements Callable<Long> {
             Date insertDate = new Date();
             if (random.nextFloat() < updateExistingPercentage) {
                 insertDate = resultSet.iterator().next().getDate(1);
-                System.out.println("doing update");
             }
             Insert insert = QueryBuilder.insertInto("test", "t1")
                     .value("id", key)
