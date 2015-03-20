@@ -11,7 +11,7 @@ public class ReadEvaluation implements PerRunEvaluation<ReadResult> {
         long rowsRead = 0;
         for (ReturnValue<ReadResult> result : list) {
             ReadResult value = result.value();
-            System.out.println("Average time taken to read " + value.averageRowsRead + " is " + value.timeTaken);
+//            System.out.println("Average time taken to read " + value.averageRowsRead + " is " + value.timeTaken);
             timeTaken += value.timeTaken;
             rowsRead += value.averageRowsRead;
         }
