@@ -153,7 +153,7 @@ public class CassandraTables {
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
-        otherArguments.put(ReadSpecificNumberOfRecords.RECORDS_TO_READ, 1);
+        otherArguments.put(ReadSpecificNumberOfRecords.RECORDS_TO_READ, 10);
         otherArguments.put(ReadSpecificNumberOfRecords.TOTAL_PARTITION_KEYS, 4000);
 
         for (int i = 0; i < NUM_OF_RUNS; i++) {
