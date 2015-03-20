@@ -148,7 +148,8 @@ public class CassandraTables {
 
         int NUM_OF_RUNS = 10;
         int NUM_OF_THREADS = 20;
-        long TOTAL_NUMBER_OF_READ_OPERATIONS = 10000000;
+//        long TOTAL_NUMBER_OF_READ_OPERATIONS = 10000000;
+        long TOTAL_NUMBER_OF_READ_OPERATIONS = 100000;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
@@ -161,6 +162,7 @@ public class CassandraTables {
             List list = threaded.run(new ReadCallback());
             ReadResult result = new ReadEvaluation().eval(list);
             averageTotal += result.timeTaken;
+            System.out.print("time taken for reading one record when reading" + TOTAL_NUMBER_OF_READ_OPERATIONS + " records in run: " + result.timeTaken);
         }
         System.out.println("Across Runs average time taken to read one record: " + (averageTotal / NUM_OF_RUNS));
         testSession.close();
