@@ -92,10 +92,10 @@ public class CassandraTables {
         Session testSession = localhost.connect("test");
         long averageTotal = 0;
 
-        int NUM_OF_RUNS = 10;
+        int NUM_OF_RUNS = 1;
         int NUM_OF_THREADS = 25;
         long NUMBER_OF_PARTITION_RECORDS = 4000;
-        int NUMBER_OF_ENTRIES_PER_PARTITION = 300;
+        int NUMBER_OF_ENTRIES_PER_PARTITION = 10;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
@@ -184,7 +184,7 @@ public class CassandraTables {
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(TOTAL_NUMBER_OF_READ_OPERATIONS, NUM_OF_THREADS,
                     new RunnerFactory(ReadWriteRunnable.class, otherArguments));
-            List list = threaded.run(new ReadCallback());
+            List list = threaded.run(new DefaultCallback());
             Long timeTaken = new AverageTimeEvaluation().eval(list);
             averageTotal += timeTaken;
             System.out.println("time taken for reading one record when reading " + TOTAL_NUMBER_OF_READ_OPERATIONS + " records in run: " + timeTaken);

@@ -36,9 +36,8 @@ public class ReadWriteRunnable implements Callable<Long> {
     @Override
     public Long call() throws Exception {
         long timeTaken = 0;
-
         for (long i = start; i < stop; i++) {
-            long key = (i + random.nextLong()) % totalPartitionKeys;
+            long key = (i + Math.abs(random.nextLong())) % totalPartitionKeys;
             Stopwatch stopwatch = Stopwatch.createStarted();
             Select singleRead = QueryBuilder.select()
                     .all().from("test", "t1")
@@ -50,6 +49,7 @@ public class ReadWriteRunnable implements Callable<Long> {
             Date insertDate = new Date();
             if (random.nextFloat() < updateExistingPercentage) {
                 insertDate = resultSet.iterator().next().getDate(1);
+                System.out.println("doing update");
             }
             Insert insert = QueryBuilder.insertInto("test", "t1")
                     .value("id", key)
@@ -63,6 +63,6 @@ public class ReadWriteRunnable implements Callable<Long> {
             session.execute(insert);
             timeTaken += stopwatch.elapsed(TimeUnit.MICROSECONDS);
         }
-        return timeTaken / (stop - stop);
+        return timeTaken / (stop - start);
     }
 }
