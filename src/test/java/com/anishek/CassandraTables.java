@@ -2,6 +2,7 @@ package com.anishek;
 
 import com.anishek.threading.*;
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.PoolingOptions;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
 import com.google.common.base.Stopwatch;
@@ -156,7 +157,7 @@ public class CassandraTables {
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
-        otherArguments.put(Constants.RECORDS_TO_READ, 10);
+        otherArguments.put(Constants.RECORDS_TO_READ, 30);
         otherArguments.put(Constants.TOTAL_PARTITION_KEYS, 4000);
 
         for (int i = 0; i < NUM_OF_RUNS; i++) {
