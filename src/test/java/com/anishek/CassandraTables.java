@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * create keyspace test with replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
- * CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts));
+ * CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts)) with compression = {'sstable_compression': ''};
  */
 public class CassandraTables {
 
@@ -94,10 +94,10 @@ public class CassandraTables {
         Session testSession = localhost.connect("test");
         long averageTotal = 0;
 
-        int NUM_OF_RUNS = 1;
+        int NUM_OF_RUNS = 10;
         int NUM_OF_THREADS = 25;
         long NUMBER_OF_PARTITION_RECORDS = 4000;
-        int NUMBER_OF_ENTRIES_PER_PARTITION = 10;
+        int NUMBER_OF_ENTRIES_PER_PARTITION = 300;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
