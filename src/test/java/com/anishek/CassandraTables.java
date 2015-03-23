@@ -32,8 +32,8 @@ public class CassandraTables {
     @Before
     public void setUp() {
         PoolingOptions poolingOptions = new PoolingOptions();
-        poolingOptions.setCoreConnectionsPerHost(HostDistance.LOCAL, 30);
         poolingOptions.setMaxConnectionsPerHost(HostDistance.LOCAL, 30);
+        poolingOptions.setCoreConnectionsPerHost(HostDistance.LOCAL, 30);
         localhost = Cluster.builder()
                 .withPoolingOptions(poolingOptions)
                 .addContactPoint("localhost")
