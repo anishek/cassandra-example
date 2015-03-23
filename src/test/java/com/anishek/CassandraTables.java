@@ -37,7 +37,7 @@ public class CassandraTables {
                 .build();
     }
 
-    private void recreateKeyspace() {
+    private void recreateKeySpace() {
         Session session = localhost.connect();
         try {
             assertTrue(session.execute("drop keyspace test;").wasApplied());
@@ -62,7 +62,7 @@ public class CassandraTables {
 
     @Test
     public void findAverageForNewPartitionInsertions() throws Exception {
-        recreateKeyspace();
+        recreateKeySpace();
         Session testSession = localhost.connect("test");
         long averageTotal = 0;
 
@@ -95,7 +95,7 @@ public class CassandraTables {
      */
     @Test
     public void findAverageWithRecordsInsertAcrossLessPartitions() throws Exception {
-        recreateKeyspace();
+        recreateKeySpace();
         Session testSession = localhost.connect("test");
         long averageTotal = 0;
 
@@ -121,7 +121,6 @@ public class CassandraTables {
         System.out.println("Average for 1 record entry over " + NUM_OF_RUNS + " runs: " + averageTotal / NUM_OF_RUNS);
         testSession.close();
     }
-
 
     @Test
     public void readAcrossThreads() throws Exception {
@@ -208,7 +207,7 @@ public class CassandraTables {
 
     @Test
     public void insertMultipleColumnsWith_TTL_AndRead() throws Exception {
-        recreateKeyspace();
+        recreateKeySpace();
         Session testSession = localhost.connect("test");
         long averageTotal = 0;
 

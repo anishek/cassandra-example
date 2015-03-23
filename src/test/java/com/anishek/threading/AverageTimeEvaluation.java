@@ -5,12 +5,16 @@ import java.util.List;
 public class AverageTimeEvaluation implements PerRunEvaluation<Long> {
 
     @Override
-    public Long eval(List<ReturnValue<Long>> list) {
+    public Long eval(List<Success<Long>> list) {
         long totalTimeTaken = 0;
-        for (ReturnValue<Long> returnValue : list) {
-            totalTimeTaken += returnValue.value();
+        int count = 0;
+        for (Success<Long> success : list) {
+            if (success.wasSuccessful()) {
+                totalTimeTaken += success.value();
+                count++;
+            }
+
         }
-        long runtime = totalTimeTaken / list.size();
-        return runtime;
+        return totalTimeTaken / count;
     }
 }
