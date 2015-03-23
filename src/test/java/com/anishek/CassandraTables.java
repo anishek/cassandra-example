@@ -46,7 +46,7 @@ public class CassandraTables {
         assertTrue(session.execute("create keyspace test with replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};").wasApplied());
         session.close();
         session = localhost.connect("test");
-        assertTrue(session.execute("CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts));").wasApplied());
+        assertTrue(session.execute("CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts)) with compression={'sstable_compression' : 'SnappyCompressor'};").wasApplied());
         session.close();
     }
 
