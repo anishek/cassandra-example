@@ -138,7 +138,7 @@ public class CassandraTables {
         long rowsRead = 0;
 
         int NUM_OF_RUNS = 10;
-        int NUM_OF_THREADS = 10;
+        int NUM_OF_THREADS = 20;
         long NUMBER_OF_PARTITION_RECORDS = 4000;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
