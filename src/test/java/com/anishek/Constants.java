@@ -5,4 +5,5 @@ public interface Constants {
     String ENTRIES_PER_PARTITION = "entriesPerPartition";
     String TOTAL_PARTITION_KEYS = "totalPartitionKeys";
     String RECORDS_TO_READ = "recordsToRead";
+    String VARIABLE_RANGE_TTL = "variableRangeTTL";
 }

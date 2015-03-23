@@ -2,6 +2,7 @@ package com.anishek;
 
 import com.anishek.threading.*;
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.HostDistance;
 import com.datastax.driver.core.PoolingOptions;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
@@ -21,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * create keyspace test with replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
- * CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts)) with compression = {'sstable_compression': ''};
+ * CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts));
  */
 public class CassandraTables {
 
@@ -30,7 +31,13 @@ public class CassandraTables {
 
     @Before
     public void setUp() {
-        localhost = Cluster.builder().addContactPoint("localhost").build();
+        PoolingOptions poolingOptions = new PoolingOptions();
+        poolingOptions.setCoreConnectionsPerHost(HostDistance.LOCAL, 30);
+        poolingOptions.setMaxConnectionsPerHost(HostDistance.LOCAL, 30);
+        localhost = Cluster.builder()
+                .withPoolingOptions(poolingOptions)
+                .addContactPoint("localhost")
+                .build();
     }
 
     private void recreateKeyspace() {
@@ -122,12 +129,17 @@ public class CassandraTables {
     @Test
     public void readAcrossThreads() throws Exception {
         Session testSession = localhost.connect("test");
+        readAcrossThreads(testSession);
+        testSession.close();
+    }
+
+    private void readAcrossThreads(Session testSession) throws Exception {
         long averageTotal = 0;
         long rowsRead = 0;
 
         int NUM_OF_RUNS = 10;
         int NUM_OF_THREADS = 10;
-        long NUMBER_OF_PARTITION_RECORDS = 50;
+        long NUMBER_OF_PARTITION_RECORDS = 4000;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
@@ -143,7 +155,6 @@ public class CassandraTables {
             System.out.println("===================================================================");
         }
         System.out.println("Across Runs average rows read per user: " + (rowsRead / NUM_OF_RUNS) + " average time taken to read the records: " + (averageTotal / NUM_OF_RUNS));
-        testSession.close();
     }
 
     @Test
@@ -153,7 +164,7 @@ public class CassandraTables {
 
         int NUM_OF_RUNS = 10;
         int NUM_OF_THREADS = 20;
-        long TOTAL_NUMBER_OF_READ_OPERATIONS = 1000000;
+        long TOTAL_NUMBER_OF_READ_OPERATIONS = 100000;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
@@ -195,6 +206,39 @@ public class CassandraTables {
             System.out.println("time taken for reading one record when reading " + TOTAL_NUMBER_OF_READ_OPERATIONS + " records in run: " + timeTaken);
         }
         System.out.println("Across Runs average time taken to read and write : " + (averageTotal / NUM_OF_RUNS));
+        testSession.close();
+    }
+
+    @Test
+    public void insertMultipleColumnsWith_TTL_AndRead() throws Exception {
+        recreateKeyspace();
+        Session testSession = localhost.connect("test");
+        long averageTotal = 0;
+
+        int NUM_OF_RUNS = 10;
+        int NUM_OF_THREADS = 25;
+        long NUMBER_OF_PARTITION_RECORDS = 4000;
+        int NUMBER_OF_ENTRIES_PER_PARTITION = 300;
+        int VARIABLE_TTL = 12 * 60;
+
+        HashMap<String, Object> otherArguments = new HashMap<String, Object>();
+        otherArguments.put(Constants.SESSION, testSession);
+        otherArguments.put(Constants.ENTRIES_PER_PARTITION, NUMBER_OF_ENTRIES_PER_PARTITION);
+        otherArguments.put(Constants.VARIABLE_RANGE_TTL, VARIABLE_TTL);
+        System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + NUMBER_OF_PARTITION_RECORDS + " records.");
+        Stopwatch started = Stopwatch.createStarted();
+        for (int i = 0; i < NUM_OF_RUNS; i++) {
+            Threaded threaded = new Threaded(NUMBER_OF_PARTITION_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertSamePartitionWithTTLRunnable.class, otherArguments));
+            List run = threaded.run(new DefaultCallback());
+            Long time = new AverageTimeEvaluation().eval(run);
+            averageTotal += time;
+            System.out.println("Average time: " + time);
+        }
+        long elapsed = started.elapsed(TimeUnit.SECONDS);
+        System.out.print("total time taken in sec: " + elapsed + " for " + (NUM_OF_RUNS * NUMBER_OF_PARTITION_RECORDS * NUMBER_OF_ENTRIES_PER_PARTITION));
+        System.out.println("Average for 1 record entry over " + NUM_OF_RUNS + " runs: " + averageTotal / NUM_OF_RUNS);
+
+        readAcrossThreads(testSession);
         testSession.close();
     }
 }
