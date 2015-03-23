@@ -1,10 +1,7 @@
 package com.anishek;
 
 import com.anishek.threading.*;
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.HostDistance;
-import com.datastax.driver.core.PoolingOptions;
-import com.datastax.driver.core.Session;
+import com.datastax.driver.core.*;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
 import com.google.common.base.Stopwatch;
 import org.junit.After;

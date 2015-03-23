@@ -38,7 +38,7 @@ public class ReadSpecificNumberOfRecords implements Callable<ReadResult> {
                     .all().from("test", "t1")
                     .where(QueryBuilder.eq("id", partitionId))
                     .orderBy(QueryBuilder.asc("ts"))
-                    .limit(recordsToRead);
+                    .setFetchSize(recordsToRead);
             Stopwatch stopwatch = Stopwatch.createStarted();
             session.execute(statement);
             timePerReadInMicro += stopwatch.elapsed(TimeUnit.MICROSECONDS);
