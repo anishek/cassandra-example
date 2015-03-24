@@ -110,8 +110,7 @@ public class CassandraTables {
         System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + NUMBER_OF_PARTITION_RECORDS + " records.");
         Stopwatch started = Stopwatch.createStarted();
         for (int i = 0; i < NUM_OF_RUNS; i++) {
-//            Threaded threaded = new Threaded(NUMBER_OF_PARTITION_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertSamePartitionRunnable.class, otherArguments));
-            Threaded threaded = new Threaded(NUMBER_OF_PARTITION_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertSamePartitionRunnableCatchingException.class, otherArguments));
+            Threaded threaded = new Threaded(NUMBER_OF_PARTITION_RECORDS, NUM_OF_THREADS, new RunnerFactory(InsertSamePartitionRunnable.class, otherArguments));
             List run = threaded.run(new DefaultCallback());
             Long time = new AverageTimeEvaluation().eval(run);
             averageTotal += time;

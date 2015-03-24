@@ -5,9 +5,7 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.exceptions.WriteTimeoutException;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.base.Stopwatch;
-import com.google.common.util.concurrent.FutureCallback;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -55,11 +53,11 @@ public class InsertSamePartitionRunnableCatchingException implements Callable<Lo
 
     public static class TimeoutException extends Exception {
 
-        public long timeoutInMicorSeconds;
+        public long timeoutInMicroSeconds;
 
-        public TimeoutException(long timeoutInMicorSeconds, Exception exception) {
+        public TimeoutException(long timeoutInMicroSeconds, Exception exception) {
             super(exception);
-            this.timeoutInMicorSeconds = timeoutInMicorSeconds;
+            this.timeoutInMicroSeconds = timeoutInMicroSeconds;
         }
 
     }

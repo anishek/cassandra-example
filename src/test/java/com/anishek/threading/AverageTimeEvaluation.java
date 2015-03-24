@@ -13,8 +13,7 @@ public class AverageTimeEvaluation implements PerRunEvaluation<Long> {
                 totalTimeTaken += success.value();
                 count++;
             }
-
         }
-        return totalTimeTaken / count;
+        return count == 0 ? 0l : totalTimeTaken / count;
     }
 }

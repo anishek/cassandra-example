@@ -18,7 +18,7 @@ public class DefaultCallback implements FutureCallback<Long>, Success<Long> {
         success = false;
         if (throwable instanceof InsertSamePartitionRunnableCatchingException.TimeoutException) {
             InsertSamePartitionRunnableCatchingException.TimeoutException exception = (InsertSamePartitionRunnableCatchingException.TimeoutException) throwable;
-            System.out.println("timeout exception : " + exception.timeoutInMicorSeconds);
+            System.out.println("timeout exception : " + exception.timeoutInMicroSeconds);
         } else {
             throw new RuntimeException("something failed", throwable);
         }
