@@ -100,7 +100,7 @@ public class CassandraTables {
         long averageTotal = 0;
 
         int NUM_OF_RUNS = 10;
-        int NUM_OF_THREADS = 25;
+        int NUM_OF_THREADS = 20;
         long NUMBER_OF_PARTITION_RECORDS = 4000;
         int NUMBER_OF_ENTRIES_PER_PARTITION = 300;
 
