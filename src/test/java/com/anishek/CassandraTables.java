@@ -46,7 +46,7 @@ public class CassandraTables {
         assertTrue(session.execute("create keyspace test with replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};").wasApplied());
         session.close();
         session = localhost.connect("test");
-        assertTrue(session.execute("CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts)) with compression={'sstable_compression' : 'SnappyCompressor'};").wasApplied());
+        assertTrue(session.execute("CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts)) with clustering order by (ts desc) compression={'sstable_compression' : 'SnappyCompressor'};").wasApplied());
         session.close();
     }
 
@@ -234,7 +234,29 @@ public class CassandraTables {
         System.out.print("total time taken in sec: " + elapsed + " for " + (NUM_OF_RUNS * NUMBER_OF_PARTITION_RECORDS * NUMBER_OF_ENTRIES_PER_PARTITION));
         System.out.println("Average for 1 record entry over " + NUM_OF_RUNS + " runs: " + averageTotal / NUM_OF_RUNS);
 
-        readSpecificNumberOfRecordsEvenlySpreadOutAcrossPartitionKeys(testSession);
+        ///////////////////////////////////////////////////WE are starting READS////////////////////////////
+
+        averageTotal = 0;
+
+        NUM_OF_RUNS = 10;
+        NUM_OF_THREADS = 20;
+        long TOTAL_NUMBER_OF_READ_OPERATIONS = 100000;
+
+        otherArguments = new HashMap<String, Object>();
+        otherArguments.put(Constants.SESSION, testSession);
+        otherArguments.put(Constants.RECORDS_TO_READ, 10);
+        otherArguments.put(Constants.TOTAL_PARTITION_KEYS, 4000);
+
+        for (int i = 0; i < NUM_OF_RUNS; i++) {
+            Threaded threaded = new Threaded(TOTAL_NUMBER_OF_READ_OPERATIONS, NUM_OF_THREADS,
+                    new RunnerFactory(ReadSpecificNumberOfRecords.class, otherArguments));
+            List list = threaded.run(new ReadCallback());
+            ReadResult result = new ReadEvaluation().eval(list);
+            averageTotal += result.timeTaken;
+            System.out.println("time taken for reading one record when reading " + TOTAL_NUMBER_OF_READ_OPERATIONS + " records in run: " + result.timeTaken);
+        }
+        System.out.println("Across Runs average time taken to read one record: " + (averageTotal / NUM_OF_RUNS));
+
         testSession.close();
     }
 }

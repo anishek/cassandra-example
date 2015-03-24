@@ -5,6 +5,7 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.base.Stopwatch;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -37,7 +38,8 @@ public class ReadSpecificNumberOfRecords implements Callable<ReadResult> {
             Statement statement = QueryBuilder.select()
                     .all().from("test", "t1")
                     .where(QueryBuilder.eq("id", partitionId))
-                    .orderBy(QueryBuilder.asc("ts"))
+                    .and(QueryBuilder.lt("ts", new Date()))
+                    .orderBy(QueryBuilder.desc("ts"))
                     .setFetchSize(recordsToRead);
             Stopwatch stopwatch = Stopwatch.createStarted();
             session.execute(statement);
