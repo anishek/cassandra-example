@@ -125,11 +125,6 @@ public class CassandraTables {
     @Test
     public void readAcrossThreads() throws Exception {
         Session testSession = localhost.connect("test");
-        readAcrossThreads(testSession);
-        testSession.close();
-    }
-
-    private void readAcrossThreads(Session testSession) throws Exception {
         long averageTotal = 0;
         long rowsRead = 0;
 
@@ -151,11 +146,10 @@ public class CassandraTables {
             System.out.println("===================================================================");
         }
         System.out.println("Across Runs average rows read per user: " + (rowsRead / NUM_OF_RUNS) + " average time taken to read the records: " + (averageTotal / NUM_OF_RUNS));
+        testSession.close();
     }
 
-    @Test
-    public void readSpecificNumberOfRecordsEvenlySpreadOutAcrossPartitionKeys() throws Exception {
-        Session testSession = localhost.connect("test");
+    private void readSpecificNumberOfRecordsEvenlySpreadOutAcrossPartitionKeys(Session testSession) throws Exception {
         long averageTotal = 0;
 
         int NUM_OF_RUNS = 10;
@@ -176,6 +170,12 @@ public class CassandraTables {
             System.out.println("time taken for reading one record when reading " + TOTAL_NUMBER_OF_READ_OPERATIONS + " records in run: " + result.timeTaken);
         }
         System.out.println("Across Runs average time taken to read one record: " + (averageTotal / NUM_OF_RUNS));
+    }
+
+    @Test
+    public void readSpecificNumberOfRecordsEvenlySpreadOutAcrossPartitionKeys() throws Exception {
+        Session testSession = localhost.connect("test");
+        readSpecificNumberOfRecordsEvenlySpreadOutAcrossPartitionKeys(testSession);
         testSession.close();
     }
 
@@ -212,10 +212,10 @@ public class CassandraTables {
         long averageTotal = 0;
 
         int NUM_OF_RUNS = 10;
-        int NUM_OF_THREADS = 25;
+        int NUM_OF_THREADS = 20;
         long NUMBER_OF_PARTITION_RECORDS = 4000;
         int NUMBER_OF_ENTRIES_PER_PARTITION = 300;
-        int VARIABLE_TTL = 12 * 60;
+        int VARIABLE_TTL = 5 * 60;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
@@ -234,7 +234,7 @@ public class CassandraTables {
         System.out.print("total time taken in sec: " + elapsed + " for " + (NUM_OF_RUNS * NUMBER_OF_PARTITION_RECORDS * NUMBER_OF_ENTRIES_PER_PARTITION));
         System.out.println("Average for 1 record entry over " + NUM_OF_RUNS + " runs: " + averageTotal / NUM_OF_RUNS);
 
-        readAcrossThreads(testSession);
+        readSpecificNumberOfRecordsEvenlySpreadOutAcrossPartitionKeys(testSession);
         testSession.close();
     }
 }

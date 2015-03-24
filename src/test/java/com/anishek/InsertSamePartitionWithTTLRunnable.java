@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 public class InsertSamePartitionWithTTLRunnable implements Callable<Long> {
-    private static final int DEFINITE_TTL_IN_SEC = 900;
+    private static final int DEFINITE_TTL_IN_SEC = 660;
     private final Coordinates coordinates;
     private final long variableRangeTTL;
     private long start;
