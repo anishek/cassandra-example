@@ -14,7 +14,8 @@ import java.util.concurrent.TimeUnit;
 public class InsertSamePartitionWithTTLRunnable implements Callable<Long> {
     private static final int DEFINITE_TTL_IN_SEC = 5 * 60;
     private final Coordinates coordinates;
-    private final long variableRangeTTL;
+    private final int variableRangeTTL;
+    private final int definiteTTLInSec;
     private long start;
     private long stop;
     private Session session;
@@ -27,7 +28,8 @@ public class InsertSamePartitionWithTTLRunnable implements Callable<Long> {
         this.coordinates = new Coordinates();
         this.session = (Session) otherArguments.get(Constants.SESSION);
         this.entriesPerPartition = new Long(otherArguments.get(Constants.ENTRIES_PER_PARTITION).toString());
-        this.variableRangeTTL = new Long(otherArguments.get(Constants.VARIABLE_RANGE_TTL).toString());
+        this.variableRangeTTL = new Integer(otherArguments.get(Constants.VARIABLE_RANGE_TTL).toString());
+        this.definiteTTLInSec = new Integer(otherArguments.get(Constants.DEFINITE_TTL_IN_SEC).toString());
     }
 
     @Override
@@ -52,6 +54,6 @@ public class InsertSamePartitionWithTTLRunnable implements Callable<Long> {
     }
 
     private int ttl() {
-        return DEFINITE_TTL_IN_SEC + (int) (random.nextFloat() * variableRangeTTL);
+        return definiteTTLInSec + (int) (random.nextFloat() * variableRangeTTL);
     }
 }

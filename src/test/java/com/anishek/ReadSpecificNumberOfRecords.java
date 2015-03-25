@@ -3,6 +3,7 @@ package com.anishek;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.driver.core.querybuilder.Select;
 import com.google.common.base.Stopwatch;
 
 import java.util.Date;
@@ -18,6 +19,7 @@ public class ReadSpecificNumberOfRecords implements Callable<ReadResult> {
     private Session session;
     private final int recordsToRead;
     private final long totalPartitionKeys;
+    private final Date dateWithNoColumnExpiryViaTTL;
     private Random random = new Random(System.nanoTime());
 
 
@@ -27,6 +29,7 @@ public class ReadSpecificNumberOfRecords implements Callable<ReadResult> {
         this.session = (Session) otherArguments.get(Constants.SESSION);
         this.recordsToRead = new Integer(otherArguments.get(Constants.RECORDS_TO_READ).toString());
         this.totalPartitionKeys = new Long(otherArguments.get(Constants.TOTAL_PARTITION_KEYS).toString());
+        this.dateWithNoColumnExpiryViaTTL = (Date) otherArguments.get(Constants.DATE_WITH_NO_COLUMN_EXPIRY_VIA_TTL);
     }
 
 
@@ -35,11 +38,14 @@ public class ReadSpecificNumberOfRecords implements Callable<ReadResult> {
         long timePerReadInMicro = 0;
         for (long i = start; i < stop; i++) {
             long partitionId = (i + random.nextLong()) % totalPartitionKeys;
-            Statement statement = QueryBuilder.select()
+            Select.Where where = QueryBuilder.select()
                     .all().from("test", "t1")
                     .where(QueryBuilder.eq("id", partitionId))
-                    .and(QueryBuilder.lt("ts", new Date()))
-                    .orderBy(QueryBuilder.desc("ts"))
+                    .and(QueryBuilder.lt("ts", new Date()));
+            if (dateWithNoColumnExpiryViaTTL != null) {
+                where = where.and(QueryBuilder.gt("ts", dateWithNoColumnExpiryViaTTL));
+            }
+            Statement statement = where.orderBy(QueryBuilder.desc("ts"))
                     .setFetchSize(recordsToRead);
             Stopwatch stopwatch = Stopwatch.createStarted();
             session.execute(statement);
