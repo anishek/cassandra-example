@@ -278,7 +278,7 @@ public class CassandraTables {
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
-        otherArguments.put(Constants.RECORDS_TO_READ, 10);
+        otherArguments.put(Constants.RECORDS_TO_READ, 30);
         otherArguments.put(Constants.TOTAL_PARTITION_KEYS, 40000);
         otherArguments.put(Constants.DATE_WITH_NO_COLUMN_EXPIRY_VIA_TTL, earliestDate);
 
