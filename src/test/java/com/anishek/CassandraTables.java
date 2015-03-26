@@ -264,7 +264,7 @@ public class CassandraTables {
 
         insertWithTTL(testSession, 40000, 30, fixedTTLInSec, variableTTL);
 
-        Thread.sleep((fixedTTLInSec + variableTTL) * 1000);
+//        Thread.sleep((fixedTTLInSec + variableTTL) * 1000);
         Date earliestDate = new Date();
 
         insertWithoutTTL(testSession, 40000, 30);
