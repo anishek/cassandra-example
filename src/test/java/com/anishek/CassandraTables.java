@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Time;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -282,6 +283,7 @@ public class CassandraTables {
         otherArguments.put(Constants.TOTAL_PARTITION_KEYS, 40000);
         otherArguments.put(Constants.DATE_WITH_NO_COLUMN_EXPIRY_VIA_TTL, earliestDate);
 
+        Stopwatch stopwatch = Stopwatch.createStarted();
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(TOTAL_NUMBER_OF_READ_OPERATIONS, NUM_OF_THREADS,
                     new RunnerFactory(ReadSpecificNumberOfRecords.class, otherArguments));
@@ -290,6 +292,7 @@ public class CassandraTables {
             averageTotal += result.timeTaken;
             System.out.println("time taken for reading one record when reading " + TOTAL_NUMBER_OF_READ_OPERATIONS + " records in run: " + result.timeTaken);
         }
+        System.out.println("total time taken(seconds): " + stopwatch.elapsed(TimeUnit.SECONDS));
         System.out.println("Across Runs average time taken to read one record: " + (averageTotal / NUM_OF_RUNS));
 
         testSession.close();
