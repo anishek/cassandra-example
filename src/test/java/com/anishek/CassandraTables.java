@@ -209,6 +209,7 @@ public class CassandraTables {
 
     @Test
     public void readWriteOperationsWithUpdatesHavingAPercentage() throws Exception {
+        recreateKeySpace();
         Session testSession = localhost.connect("test");
         long averageTotal = 0;
 
@@ -220,7 +221,7 @@ public class CassandraTables {
         otherArguments.put(Constants.SESSION, testSession);
         otherArguments.put(Constants.TOTAL_PARTITION_KEYS, 4000);
         otherArguments.put(ReadWriteRunnable.UPDATE_EXISTING_PERCENTAGE, 0.7);
-        otherArguments.put(Constants.COLUMN_STRUCTURE, new MultiColumnStructure());
+        otherArguments.put(Constants.COLUMN_STRUCTURE, new SingleColumnStructure());
 
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(TOTAL_NUMBER_OF_READ_OPERATIONS, NUM_OF_THREADS,
