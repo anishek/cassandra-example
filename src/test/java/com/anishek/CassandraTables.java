@@ -65,7 +65,7 @@ public class CassandraTables {
         assertTrue(session.execute("create keyspace test with replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};").wasApplied());
         session.close();
         session = localhost.connect("test");
-        assertTrue(session.execute("CREATE TABLE t1(id bigint, ts timestamp, definition text, primary key (id, ts)) " +
+        assertTrue(session.execute("CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts)) " +
                 "with clustering order by (ts desc) and gc_grace_seconds=0 " +
                 "and compression={'sstable_compression' : ''};").wasApplied());
         session.close();
@@ -129,7 +129,7 @@ public class CassandraTables {
     private void insertWithoutTTL(Session testSession, long partitionKeys, int entriesPerPartition, ColumnStructure columnStructure) throws Exception {
         long averageTotal = 0;
         int NUM_OF_RUNS = 10;
-        int NUM_OF_THREADS = 20;
+        int NUM_OF_THREADS = 25;
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
