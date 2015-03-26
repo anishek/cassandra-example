@@ -31,16 +31,14 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * create keyspace test with replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
- *
+ * <p/>
  * /////////////////// MULTI COLUMN STRUCTURE ////////////////////////
  * CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts)) with clustering order by (ts desc)
  * and compression={'sstable_compression' : 'SnappyCompressor'} and gc_grace_seconds=0;
- *
+ * <p/>
  * ////////////////// SINGLE COLUMN STRUCTURE /////////////////////////////////////
  * CREATE TABLE t1(id bigint, ts timestamp, definition text, primary key (id, ts)) with clustering order by (ts desc)
  * and compression={'sstable_compression' : 'SnappyCompressor'} and gc_grace_seconds=0;
- *
- *
  */
 public class CassandraTables {
 
@@ -290,8 +288,8 @@ public class CassandraTables {
         recreateKeySpace();
         Session testSession = localhost.connect("test");
         // total insertion in takes about 1200 sec based on previous runs
-        int fixedTTLInSec = 20 * 60;
-        int variableTTL = 4 * 60;
+        int fixedTTLInSec = 10 * 60;
+        int variableTTL = (int) (1.5f * 60);
 
         insertWithTTL(testSession, 40000, 30, fixedTTLInSec, variableTTL, columnStructure);
 
