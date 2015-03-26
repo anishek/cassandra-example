@@ -288,7 +288,7 @@ public class CassandraTables {
         recreateKeySpace();
         Session testSession = localhost.connect("test");
         // total insertion in takes about 1200 sec based on previous runs
-        int fixedTTLInSec = 10 * 60;
+        int fixedTTLInSec = 11 * 60;
         int variableTTL = (int) (1.5f * 60);
 
         insertWithTTL(testSession, 40000, 30, fixedTTLInSec, variableTTL, columnStructure);
