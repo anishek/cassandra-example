@@ -31,7 +31,16 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * create keyspace test with replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
- * CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts)) with clustering order by (ts desc) and compression={'sstable_compression' : 'SnappyCompressor'};
+ *
+ * /////////////////// MULTI COLUMN STRUCTURE ////////////////////////
+ * CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts)) with clustering order by (ts desc)
+ * and compression={'sstable_compression' : 'SnappyCompressor'} and gc_grace_seconds=0;
+ *
+ * ////////////////// SINGLE COLUMN STRUCTURE /////////////////////////////////////
+ * CREATE TABLE t1(id bigint, ts timestamp, definition text, primary key (id, ts)) with clustering order by (ts desc)
+ * and compression={'sstable_compression' : 'SnappyCompressor'} and gc_grace_seconds=0;
+ *
+ *
  */
 public class CassandraTables {
 
@@ -58,7 +67,7 @@ public class CassandraTables {
         assertTrue(session.execute("create keyspace test with replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};").wasApplied());
         session.close();
         session = localhost.connect("test");
-        assertTrue(session.execute("CREATE TABLE t1(id bigint, ts timestamp, cat1 set<text>, cat2 set<text>, lat float, lon float, a bigint, primary key (id, ts)) " +
+        assertTrue(session.execute("CREATE TABLE t1(id bigint, ts timestamp, definition text, primary key (id, ts)) " +
                 "with clustering order by (ts desc) and compression={'sstable_compression' : 'SnappyCompressor'} " +
                 "and gc_grace_seconds=0;").wasApplied());
         session.close();
