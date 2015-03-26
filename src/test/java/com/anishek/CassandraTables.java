@@ -257,13 +257,13 @@ public class CassandraTables {
     public void insertColumnsWithTTL_outsideOurReadRequests() throws Exception {
         recreateKeySpace();
         Session testSession = localhost.connect("test");
-
-        int fixedTTL = 1;
+        // total insertion in takes about 1200 sec based on previous runs
+        int fixedTTLInSec = 20 * 60;
         int variableTTL = 10;
 
-        insertWithTTL(testSession, 40000, 30, fixedTTL, variableTTL);
+        insertWithTTL(testSession, 40000, 30, fixedTTLInSec, variableTTL);
 
-        Thread.sleep((fixedTTL + variableTTL) * 1000);
+        Thread.sleep((fixedTTLInSec + variableTTL) * 1000);
         Date earliestDate = new Date();
 
         insertWithoutTTL(testSession, 40000, 30);
@@ -295,7 +295,7 @@ public class CassandraTables {
         testSession.close();
     }
 
-    private void insertWithTTL(Session testSession, long numberOfPartitions, int entriesPerPartition, int fixedTTL, int variableTTLInSec) throws Exception {
+    private void insertWithTTL(Session testSession, long numberOfPartitions, int entriesPerPartition, int fixedTTLInSec, int variableTTLInSec) throws Exception {
         long averageTotal = 0;
 
         int NUM_OF_RUNS = 10;
@@ -305,7 +305,7 @@ public class CassandraTables {
         otherArguments.put(Constants.SESSION, testSession);
         otherArguments.put(Constants.ENTRIES_PER_PARTITION, entriesPerPartition);
         otherArguments.put(Constants.VARIABLE_RANGE_TTL, variableTTLInSec);
-        otherArguments.put(Constants.DEFINITE_TTL_IN_SEC, fixedTTL);
+        otherArguments.put(Constants.DEFINITE_TTL_IN_SEC, fixedTTLInSec);
         System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + numberOfPartitions + " records.");
         Stopwatch started = Stopwatch.createStarted();
         for (int i = 0; i < NUM_OF_RUNS; i++) {

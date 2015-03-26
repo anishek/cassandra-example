@@ -12,7 +12,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 public class InsertSamePartitionWithTTLRunnable implements Callable<Long> {
-    private static final int DEFINITE_TTL_IN_SEC = 5 * 60;
     private final Coordinates coordinates;
     private final int variableRangeTTL;
     private final int definiteTTLInSec;
