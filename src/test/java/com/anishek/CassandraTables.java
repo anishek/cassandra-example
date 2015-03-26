@@ -259,7 +259,7 @@ public class CassandraTables {
         Session testSession = localhost.connect("test");
         // total insertion in takes about 1200 sec based on previous runs
         int fixedTTLInSec = 20 * 60;
-        int variableTTL = 10;
+        int variableTTL = 4 * 60;
 
         insertWithTTL(testSession, 40000, 30, fixedTTLInSec, variableTTL);
 
