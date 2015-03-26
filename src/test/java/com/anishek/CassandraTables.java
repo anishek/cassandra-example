@@ -119,8 +119,8 @@ public class CassandraTables {
         recreateKeySpace();
         Session testSession = localhost.connect("test");
 
-        long NUMBER_OF_PARTITION_RECORDS = 40000;
-        int NUMBER_OF_ENTRIES_PER_PARTITION = 30;
+        long NUMBER_OF_PARTITION_RECORDS = 4000;
+        int NUMBER_OF_ENTRIES_PER_PARTITION = 300;
 
         insertWithoutTTL(testSession, NUMBER_OF_PARTITION_RECORDS, NUMBER_OF_ENTRIES_PER_PARTITION, new MultiColumnStructure());
         testSession.close();
