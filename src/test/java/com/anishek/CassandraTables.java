@@ -66,7 +66,8 @@ public class CassandraTables {
         session.close();
         session = localhost.connect("test");
         assertTrue(session.execute("CREATE TABLE t1(id bigint, ts timestamp, definition text, primary key (id, ts)) " +
-                "with clustering order by (ts desc) and gc_grace_seconds=0;").wasApplied());
+                "with clustering order by (ts desc) and gc_grace_seconds=0 " +
+                "and compression={'sstable_compression' : ''};").wasApplied());
         session.close();
     }
 
