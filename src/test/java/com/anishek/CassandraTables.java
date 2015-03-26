@@ -209,8 +209,9 @@ public class CassandraTables {
 
     @Test
     public void readWriteOperationsWithUpdatesHavingAPercentage() throws Exception {
-        recreateKeySpace();
         Session testSession = localhost.connect("test");
+        recreateKeySpace();
+        insertWithTTL(testSession, 40000, 30, (int) (5.5 * 60), 60, new SingleColumnStructure());
         long averageTotal = 0;
 
         int NUM_OF_RUNS = 10;
@@ -219,10 +220,10 @@ public class CassandraTables {
 
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
-        otherArguments.put(Constants.TOTAL_PARTITION_KEYS, 4000);
+        otherArguments.put(Constants.TOTAL_PARTITION_KEYS, 40000);
         otherArguments.put(ReadWriteRunnable.UPDATE_EXISTING_PERCENTAGE, 0.7);
         otherArguments.put(Constants.COLUMN_STRUCTURE, new SingleColumnStructure());
-
+        Stopwatch stopwatch = Stopwatch.createStarted();
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(TOTAL_NUMBER_OF_READ_OPERATIONS, NUM_OF_THREADS,
                     new RunnerFactory(ReadWriteRunnable.class, otherArguments));
@@ -232,6 +233,7 @@ public class CassandraTables {
             System.out.println("time taken for reading one record when reading " + TOTAL_NUMBER_OF_READ_OPERATIONS + " records in run: " + timeTaken);
         }
         System.out.println("Across Runs average time taken to read and write : " + (averageTotal / NUM_OF_RUNS));
+        System.out.println("Total time taken for Read/Write ops only : " + stopwatch.elapsed(TimeUnit.SECONDS));
         testSession.close();
     }
 
