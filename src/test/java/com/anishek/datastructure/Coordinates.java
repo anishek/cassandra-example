@@ -1,4 +1,4 @@
-package com.anishek;
+package com.anishek.datastructure;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -10,7 +10,15 @@ public class Coordinates {
     private static final int ACCURACY = 3;
 
 
-    private Random random = new Random(System.currentTimeMillis());
+    private Random random;
+
+    public Coordinates(Random random) {
+        this.random = random;
+    }
+
+    public Coordinates() {
+        this.random = new Random(System.currentTimeMillis());
+    }
 
     public double lat() {
         return roundDownValue(random.nextFloat() * LATITUDE_BOUNDARY - 90);

@@ -8,4 +8,5 @@ public interface Constants {
     String VARIABLE_RANGE_TTL = "variableRangeTTL";
     String DEFINITE_TTL_IN_SEC = "definiteTTLInSec";
     String DATE_WITH_NO_COLUMN_EXPIRY_VIA_TTL = "dateWithNoColumnExpiryViaTTL";
+    String COLUMN_STRUCTURE = "columnStructure";
 }

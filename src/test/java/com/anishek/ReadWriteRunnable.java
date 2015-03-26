@@ -1,5 +1,6 @@
 package com.anishek;
 
+import com.anishek.write.ColumnStructure;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.Insert;
@@ -22,7 +23,7 @@ public class ReadWriteRunnable implements Callable<Long> {
     private Session session;
     private float updateExistingPercentage;
     private Random random = new Random(System.currentTimeMillis());
-    private Coordinates coordinates;
+    private ColumnStructure columnStructure;
 
     public ReadWriteRunnable(long start, long stop, Map<String, Object> otherArguments) {
         this.start = start;
@@ -30,7 +31,7 @@ public class ReadWriteRunnable implements Callable<Long> {
         session = (Session) otherArguments.get(Constants.SESSION);
         updateExistingPercentage = new Float(otherArguments.get(UPDATE_EXISTING_PERCENTAGE).toString());
         totalPartitionKeys = new Long(otherArguments.get(Constants.TOTAL_PARTITION_KEYS).toString());
-        coordinates = new Coordinates();
+        columnStructure = (ColumnStructure) otherArguments.get(Constants.COLUMN_STRUCTURE);
     }
 
     @Override
@@ -52,14 +53,8 @@ public class ReadWriteRunnable implements Callable<Long> {
             }
             Insert insert = QueryBuilder.insertInto("test", "t1")
                     .value("id", key)
-                    .value("ts", insertDate)
-                    .value("cat1", Categories.categoryValues())
-                    .value("cat2", Categories.categoryValues())
-                    .value("lat", coordinates.lat())
-                    .value("lon", coordinates.lon())
-                    .value("a", random.nextLong());
-
-            session.execute(insert);
+                    .value("ts", insertDate);
+            session.execute(columnStructure.populate(insert));
             timeTaken += stopwatch.elapsed(TimeUnit.MICROSECONDS);
         }
         return timeTaken / (stop - start);

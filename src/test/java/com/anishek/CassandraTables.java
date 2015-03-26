@@ -1,14 +1,24 @@
 package com.anishek;
 
+import com.anishek.datastructure.MultiColumnStructure;
+import com.anishek.datastructure.SingleColumnStructure;
+import com.anishek.read.ReadRunnable;
+import com.anishek.read.ReadSpecificNumberOfRecords;
 import com.anishek.threading.*;
-import com.datastax.driver.core.*;
+import com.anishek.write.ColumnStructure;
+import com.anishek.write.InsertRunnable;
+import com.anishek.write.InsertSamePartitionRunnable;
+import com.anishek.write.InsertSamePartitionWithTTLRunnable;
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.HostDistance;
+import com.datastax.driver.core.PoolingOptions;
+import com.datastax.driver.core.Session;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
 import com.google.common.base.Stopwatch;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -105,11 +115,11 @@ public class CassandraTables {
         long NUMBER_OF_PARTITION_RECORDS = 40000;
         int NUMBER_OF_ENTRIES_PER_PARTITION = 30;
 
-        insertWithoutTTL(testSession, NUMBER_OF_PARTITION_RECORDS, NUMBER_OF_ENTRIES_PER_PARTITION);
+        insertWithoutTTL(testSession, NUMBER_OF_PARTITION_RECORDS, NUMBER_OF_ENTRIES_PER_PARTITION, new MultiColumnStructure());
         testSession.close();
     }
 
-    private void insertWithoutTTL(Session testSession, long partitionKeys, int entriesPerPartition) throws Exception {
+    private void insertWithoutTTL(Session testSession, long partitionKeys, int entriesPerPartition, ColumnStructure columnStructure) throws Exception {
         long averageTotal = 0;
         int NUM_OF_RUNS = 10;
         int NUM_OF_THREADS = 20;
@@ -117,6 +127,8 @@ public class CassandraTables {
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
         otherArguments.put(Constants.ENTRIES_PER_PARTITION, entriesPerPartition);
+        otherArguments.put(Constants.COLUMN_STRUCTURE, columnStructure);
+
         System.out.println("Without TTL Average for " + NUM_OF_THREADS + " threads inserting " + partitionKeys + " records.");
         Stopwatch started = Stopwatch.createStarted();
         for (int i = 0; i < NUM_OF_RUNS; i++) {
@@ -201,6 +213,7 @@ public class CassandraTables {
         otherArguments.put(Constants.SESSION, testSession);
         otherArguments.put(Constants.TOTAL_PARTITION_KEYS, 4000);
         otherArguments.put(ReadWriteRunnable.UPDATE_EXISTING_PERCENTAGE, 0.7);
+        otherArguments.put(Constants.COLUMN_STRUCTURE, new MultiColumnStructure());
 
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(TOTAL_NUMBER_OF_READ_OPERATIONS, NUM_OF_THREADS,
@@ -227,7 +240,7 @@ public class CassandraTables {
         int DEFINITE_TTL_IN_SEC = 5 * 60;
 
 
-        insertWithTTL(testSession, 40000, 30, DEFINITE_TTL_IN_SEC, VARIABLE_TTL);
+        insertWithTTL(testSession, 40000, 30, DEFINITE_TTL_IN_SEC, VARIABLE_TTL, new MultiColumnStructure());
 
         ///////////////////////////////////////////////////WE are starting READS////////////////////////////
 
@@ -255,18 +268,27 @@ public class CassandraTables {
     }
 
     @Test
-    public void insertColumnsWithTTL_outsideOurReadRequests() throws Exception {
+    public void multiColumnStructureInsertColumnsWithTTL_outsideOurReadRequests() throws Exception {
+        insertColumnsWithTTL_outsideOurReadRequests(new MultiColumnStructure());
+    }
+
+    @Test
+    public void singleColumnStructureInsertColumnsWithTTL_outsideOurReadRequests() throws Exception {
+        insertColumnsWithTTL_outsideOurReadRequests(new SingleColumnStructure());
+    }
+
+    public void insertColumnsWithTTL_outsideOurReadRequests(ColumnStructure columnStructure) throws Exception {
         recreateKeySpace();
         Session testSession = localhost.connect("test");
         // total insertion in takes about 1200 sec based on previous runs
         int fixedTTLInSec = 20 * 60;
         int variableTTL = 4 * 60;
 
-        insertWithTTL(testSession, 40000, 30, fixedTTLInSec, variableTTL);
+        insertWithTTL(testSession, 40000, 30, fixedTTLInSec, variableTTL, columnStructure);
 
         Date earliestDate = new Date();
 
-        insertWithoutTTL(testSession, 40000, 30);
+        insertWithoutTTL(testSession, 40000, 30, columnStructure);
 
 
         ///////////////////////////////////////////////////WE are starting READS////////////////////////////
@@ -297,7 +319,7 @@ public class CassandraTables {
         testSession.close();
     }
 
-    private void insertWithTTL(Session testSession, long numberOfPartitions, int entriesPerPartition, int fixedTTLInSec, int variableTTLInSec) throws Exception {
+    private void insertWithTTL(Session testSession, long numberOfPartitions, int entriesPerPartition, int fixedTTLInSec, int variableTTLInSec, ColumnStructure columnStructure) throws Exception {
         long averageTotal = 0;
 
         int NUM_OF_RUNS = 10;
@@ -308,6 +330,8 @@ public class CassandraTables {
         otherArguments.put(Constants.ENTRIES_PER_PARTITION, entriesPerPartition);
         otherArguments.put(Constants.VARIABLE_RANGE_TTL, variableTTLInSec);
         otherArguments.put(Constants.DEFINITE_TTL_IN_SEC, fixedTTLInSec);
+        otherArguments.put(Constants.COLUMN_STRUCTURE, columnStructure);
+
         System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + numberOfPartitions + " records.");
         Stopwatch started = Stopwatch.createStarted();
         for (int i = 0; i < NUM_OF_RUNS; i++) {
