@@ -67,7 +67,7 @@ public class CassandraTables {
         session = localhost.connect("test");
         assertTrue(session.execute(" CREATE TABLE t1(id bigint, ts timestamp, definition text, primary key (id, ts)) " +
                 "with clustering order by (ts desc) and gc_grace_seconds=0 " +
-                "and compaction = {'class': 'DateTieredCompactionStrategy', 'timestamp_resolution':'SECONDS', 'base_time_seconds':'60', 'max_sstable_age_days':'30'};\n" +
+                "and compaction = {'class': 'DateTieredCompactionStrategy', 'timestamp_resolution':'SECONDS', 'base_time_seconds':'60', 'max_sstable_age_days':'30'}" +
                 "and compression={'sstable_compression' : ''};").wasApplied());
         session.close();
     }
