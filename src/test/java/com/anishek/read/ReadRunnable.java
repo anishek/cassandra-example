@@ -41,7 +41,7 @@ public class ReadRunnable implements Callable<ReadResult> {
         for (long i = start; i < stop; i++) {
             for (long k = 0; k < readOperationsPerKey; k++) {
                 int numberOfRowsToGet = new Float(random.nextFloat() * entriesPerPartition).intValue();
-                Statement statement = QueryBuilder.select().all().from("test", "t1").where(QueryBuilder.eq("id", i)).and(QueryBuilder.lt("ts", new Date())).limit(numberOfRowsToGet).setFetchSize(200);
+                Statement statement = QueryBuilder.select().all().from("test", "t1").where(QueryBuilder.eq("id", i)).and(QueryBuilder.lt("ts", new Date())).limit(numberOfRowsToGet).setFetchSize(numberOfRowsToGet);
                 for (Row row : session.execute(statement)) {
                     rowsRead++;
                 }

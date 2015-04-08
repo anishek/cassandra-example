@@ -164,7 +164,7 @@ public class CassandraTables {
         HashMap<String, Object> otherArguments = new HashMap<String, Object>();
         otherArguments.put(Constants.SESSION, testSession);
         otherArguments.put(ReadRunnable.READ_OPERATIONS_PER_KEY, 1);
-        otherArguments.put(Constants.ENTRIES_PER_PARTITION, 300);
+        otherArguments.put(Constants.ENTRIES_PER_PARTITION, 30);
 
         for (int i = 0; i < NUM_OF_RUNS; i++) {
             Threaded threaded = new Threaded(NUMBER_OF_PARTITION_RECORDS, NUM_OF_THREADS, new RunnerFactory(ReadRunnable.class, otherArguments));
