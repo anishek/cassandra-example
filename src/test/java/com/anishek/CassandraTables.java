@@ -322,7 +322,7 @@ public class CassandraTables {
             List list = threaded.run(new ReadCallback());
             ReadResult result = new ReadEvaluation().eval(list);
             averageTotal += result.timeTaken;
-            System.out.println("time taken for reading one record when reading " + TOTAL_NUMBER_OF_READ_OPERATIONS + " records in run: " + result.timeTaken);
+//            System.out.println("time taken for reading one record when reading " + TOTAL_NUMBER_OF_READ_OPERATIONS + " records in run: " + result.timeTaken);
         }
         System.out.println("total time taken(seconds): " + stopwatch.elapsed(TimeUnit.SECONDS));
         System.out.println("Across Runs average time taken to read one record: " + (averageTotal / NUM_OF_RUNS));
@@ -350,7 +350,7 @@ public class CassandraTables {
             List run = threaded.run(new DefaultCallback());
             Long time = new AverageTimeEvaluation().eval(run);
             averageTotal += time;
-            System.out.println("Average time: " + time);
+//            System.out.println("Average time: " + time);
         }
         long elapsed = started.elapsed(TimeUnit.SECONDS);
         System.out.println("total time taken in sec: " + elapsed + " for " + (NUM_OF_RUNS * numberOfPartitions * entriesPerPartition));
