@@ -144,7 +144,7 @@ public class CassandraTables {
             List run = threaded.run(new DefaultCallback());
             Long time = new AverageTimeEvaluation().eval(run);
             averageTotal += time;
-            System.out.println("Average time: " + time);
+//            System.out.println("Average time: " + time);
         }
         long elapsed = started.elapsed(TimeUnit.SECONDS);
         System.out.print("total time taken in sec: " + elapsed + " for " + (NUM_OF_RUNS * partitionKeys * entriesPerPartition));
