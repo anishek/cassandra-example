@@ -74,7 +74,7 @@ public class CassandraBitTables {
     }
 
     private Collection<String> contactPoints() {
-        String value = System.getenv().get(CONFIG_FILE_KEY);
+        String value = System.getProperty(CONFIG_FILE_KEY);
         return Collections2.transform(Arrays.asList(value.split(",")), new Function<String, String>() {
             @Override
             public String apply(String s) {
