@@ -1,8 +1,9 @@
 package com.anishek.pattern2;
 
 import com.anishek.Constants;
+import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.Insert;
+import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.FutureCallback;
@@ -28,10 +29,10 @@ public class BitInsertRunnable implements Callable<Long> {
     public Long call() throws Exception {
         Stopwatch stopwatch = Stopwatch.createStarted();
         for (long i = start; i < stop; i++) {
-            Insert insert = QueryBuilder.insertInto("test", "Segments")
+            Statement statement = QueryBuilder.insertInto("test", "Segments")
                     .value("id", i)
-                    .value("segment_bits", randomValue.next());
-            session.execute(insert);
+                    .value("segment_bits", randomValue.next()).setConsistencyLevel(ConsistencyLevel.LOCAL_ONE);
+            session.execute(statement);
         }
         stopwatch.stop();
         return stopwatch.elapsed(TimeUnit.MILLISECONDS);
