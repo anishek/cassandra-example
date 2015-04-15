@@ -16,6 +16,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -68,9 +69,12 @@ public class CassandraBitTables {
         otherArguments.put(Constants.SESSION, session);
 
         Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(BitInsertRunnable.class, otherArguments));
-        BitInsertRunnable.Callback callback = new BitInsertRunnable.Callback();
-        threaded.run(callback);
-        System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (callback.timeTakenInMilliSeconds / NUM_OF_KEYS));
+        List<BitInsertRunnable.Callback> callbacks = threaded.run(new BitInsertRunnable.Callback());
+        long sum = 0;
+        for (BitInsertRunnable.Callback callback : callbacks) {
+            sum += callback.timeTakenInMilliSeconds;
+        }
+        System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_KEYS));
     }
 
     private Collection<String> contactPoints() {

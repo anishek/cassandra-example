@@ -38,17 +38,18 @@ public class BitInsertRunnable implements Callable<Long> {
         return stopwatch.elapsed(TimeUnit.MILLISECONDS);
     }
 
-    static class Callback implements FutureCallback<Long> {
+    public static class Callback implements FutureCallback<Long> {
         long timeTakenInMilliSeconds = 0;
 
         @Override
         public void onSuccess(Long time) {
-            timeTakenInMilliSeconds += time;
+            timeTakenInMilliSeconds = time;
         }
 
         @Override
         public void onFailure(Throwable throwable) {
             throw new RuntimeException("an Exception occurred ", throwable);
         }
+
     }
 }
