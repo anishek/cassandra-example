@@ -29,7 +29,7 @@ public class BitInsertRunnable implements Callable<Long> {
     public Long call() throws Exception {
         Stopwatch stopwatch = Stopwatch.createStarted();
         for (long i = start; i < stop; i++) {
-            Statement statement = QueryBuilder.insertInto("test", "Segments")
+            Statement statement = QueryBuilder.insertInto("test", "segments")
                     .value("id", i)
                     .value("segment_bits", randomValue.next()).setConsistencyLevel(ConsistencyLevel.LOCAL_ONE);
             session.execute(statement);

@@ -52,7 +52,7 @@ public class CassandraBitTables {
         assertTrue(session.execute("create keyspace test with replication = {'class': 'NetworkTopologyStrategy', 'WDC' : 3};").wasApplied());
         session.close();
         session = cluster.connect("test");
-        assertTrue(session.execute(" CREATE TABLE Segments(id bigint primary key , segment_bits text) " +
+        assertTrue(session.execute(" CREATE TABLE segments(id bigint primary key , segment_bits text) " +
                 "with gc_grace_seconds=0 " +
                 "and compaction = {'class': 'LeveledCompactionStrategy'} " +
                 "and compression={'sstable_compression' : ''};").wasApplied());
