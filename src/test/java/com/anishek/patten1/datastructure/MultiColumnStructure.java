@@ -1,6 +1,6 @@
-package com.anishek.datastructure;
+package com.anishek.patten1.datastructure;
 
-import com.anishek.write.ColumnStructure;
+import com.anishek.patten1.write.ColumnStructure;
 import com.datastax.driver.core.querybuilder.Insert;
 
 import java.util.Random;

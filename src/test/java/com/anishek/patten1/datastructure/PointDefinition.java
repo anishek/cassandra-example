@@ -1,4 +1,4 @@
-package com.anishek.datastructure;
+package com.anishek.patten1.datastructure;
 
 import org.json.simple.JSONObject;
 

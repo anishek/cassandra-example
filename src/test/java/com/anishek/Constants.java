@@ -9,4 +9,6 @@ public interface Constants {
     String DEFINITE_TTL_IN_SEC = "definiteTTLInSec";
     String DATE_WITH_NO_COLUMN_EXPIRY_VIA_TTL = "dateWithNoColumnExpiryViaTTL";
     String COLUMN_STRUCTURE = "columnStructure";
+
+    int BITS = 100;
 }

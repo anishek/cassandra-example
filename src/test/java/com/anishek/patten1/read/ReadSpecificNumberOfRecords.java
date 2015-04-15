@@ -1,7 +1,7 @@
-package com.anishek.read;
+package com.anishek.patten1.read;
 
 import com.anishek.Constants;
-import com.anishek.ReadResult;
+import com.anishek.patten1.ReadResult;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;

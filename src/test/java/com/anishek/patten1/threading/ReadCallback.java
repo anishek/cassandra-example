@@ -1,6 +1,6 @@
-package com.anishek.threading;
+package com.anishek.patten1.threading;
 
-import com.anishek.ReadResult;
+import com.anishek.patten1.ReadResult;
 import com.google.common.util.concurrent.FutureCallback;
 
 public class ReadCallback implements FutureCallback<ReadResult>, Success<ReadResult> {

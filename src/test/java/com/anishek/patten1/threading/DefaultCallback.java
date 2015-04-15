@@ -1,6 +1,6 @@
-package com.anishek.threading;
+package com.anishek.patten1.threading;
 
-import com.anishek.write.InsertSamePartitionRunnableCatchingException;
+import com.anishek.patten1.write.InsertSamePartitionRunnableCatchingException;
 import com.google.common.util.concurrent.FutureCallback;
 
 public class DefaultCallback implements FutureCallback<Long>, Success<Long> {

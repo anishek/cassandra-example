@@ -1,4 +1,4 @@
-package com.anishek.write;
+package com.anishek.patten1.write;
 
 import com.datastax.driver.core.querybuilder.Insert;
 

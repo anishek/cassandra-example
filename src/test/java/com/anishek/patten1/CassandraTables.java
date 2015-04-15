@@ -1,14 +1,17 @@
-package com.anishek;
+package com.anishek.patten1;
 
-import com.anishek.datastructure.MultiColumnStructure;
-import com.anishek.datastructure.SingleColumnStructure;
-import com.anishek.read.ReadRunnable;
-import com.anishek.read.ReadSpecificNumberOfRecords;
-import com.anishek.threading.*;
-import com.anishek.write.ColumnStructure;
-import com.anishek.write.InsertRunnable;
-import com.anishek.write.InsertSamePartitionRunnable;
-import com.anishek.write.InsertSamePartitionWithTTLRunnable;
+import com.anishek.Constants;
+import com.anishek.patten1.datastructure.MultiColumnStructure;
+import com.anishek.patten1.datastructure.SingleColumnStructure;
+import com.anishek.patten1.read.ReadRunnable;
+import com.anishek.patten1.read.ReadSpecificNumberOfRecords;
+import com.anishek.patten1.threading.*;
+import com.anishek.patten1.write.ColumnStructure;
+import com.anishek.patten1.write.InsertRunnable;
+import com.anishek.patten1.write.InsertSamePartitionRunnable;
+import com.anishek.patten1.write.InsertSamePartitionWithTTLRunnable;
+import com.anishek.threading.RunnerFactory;
+import com.anishek.threading.Threaded;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.HostDistance;
 import com.datastax.driver.core.PoolingOptions;
@@ -92,7 +95,7 @@ public class CassandraTables {
         int NUM_OF_THREADS = 40;
         long NUMBER_OF_RECORDS = 1000 * 1000;
 
-        HashMap<String, Object> otherArguments = new HashMap<String, Object>();
+        HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.SESSION, testSession);
 
         System.out.println("Average for " + NUM_OF_THREADS + " threads inserting " + NUMBER_OF_RECORDS + " records");

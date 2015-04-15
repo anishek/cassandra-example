@@ -1,4 +1,4 @@
-package com.anishek.write;
+package com.anishek.patten1.write;
 
 import com.anishek.Constants;
 import com.datastax.driver.core.Session;

@@ -1,6 +1,7 @@
-package com.anishek;
+package com.anishek.patten1;
 
-import com.anishek.write.ColumnStructure;
+import com.anishek.Constants;
+import com.anishek.patten1.write.ColumnStructure;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.Insert;

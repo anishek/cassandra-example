@@ -1,4 +1,4 @@
-package com.anishek.datastructure;
+package com.anishek.patten1.datastructure;
 
 import java.util.HashSet;
 import java.util.Set;

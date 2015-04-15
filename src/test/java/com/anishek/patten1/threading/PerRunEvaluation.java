@@ -1,4 +1,4 @@
-package com.anishek.threading;
+package com.anishek.patten1.threading;
 
 import java.util.List;
 

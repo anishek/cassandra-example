@@ -1,6 +1,6 @@
-package com.anishek.threading;
+package com.anishek.patten1.threading;
 
-import com.anishek.ReadResult;
+import com.anishek.patten1.ReadResult;
 
 import java.util.List;
 

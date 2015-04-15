@@ -1,4 +1,4 @@
-package com.anishek.datastructure;
+package com.anishek.patten1.datastructure;
 
 import java.math.BigDecimal;
 import java.util.Random;
