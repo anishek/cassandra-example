@@ -61,7 +61,7 @@ public class CassandraBitTables {
 
     @Test
     public void insertData() throws Exception {
-        recreateKeyspace();
+//        recreateKeyspace();
         Session session = cluster.connect("test");
         int NUM_OF_THREADS = 20;
         int NUM_OF_KEYS = 1000000;
