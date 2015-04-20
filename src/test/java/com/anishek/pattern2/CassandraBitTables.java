@@ -64,20 +64,17 @@ public class CassandraBitTables {
 //        recreateKeyspace();
         Session session = cluster.connect("test");
         int NUM_OF_THREADS = 20;
-        int NUM_OF_KEYS = 1000000;
+        int NUM_OF_KEYS = 10000000;
         HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.SESSION, session);
 
-        while (true) {
-            Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(BitInsertRunnable.class, otherArguments));
-            List<BitInsertRunnable.Callback> callbacks = threaded.run(new BitInsertRunnable.Callback());
+        Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(BitInsertRunnable.class, otherArguments));
+        List<BitInsertRunnable.Callback> callbacks = threaded.run(new BitInsertRunnable.Callback());
+        long sum = 0;
+        for (BitInsertRunnable.Callback callback : callbacks) {
+            sum += callback.timeTakenInMilliSeconds;
         }
-
-////        long sum = 0;
-////            for (BitInsertRunnable.Callback callback : callbacks) {
-////                sum += callback.timeTakenInMilliSeconds;
-////            }
-//        System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_KEYS));
+        System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_KEYS));
     }
 
     private Collection<String> contactPoints() {
