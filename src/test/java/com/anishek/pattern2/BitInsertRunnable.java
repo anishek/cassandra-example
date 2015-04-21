@@ -34,7 +34,6 @@ public class BitInsertRunnable implements Callable<Long> {
                     .value("segment_bits", randomValue.next()).setConsistencyLevel(ConsistencyLevel.LOCAL_ONE);
             session.execute(statement);
         }
-        stopwatch.stop();
         return stopwatch.elapsed(TimeUnit.MILLISECONDS);
     }
 
