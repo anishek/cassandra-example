@@ -3,10 +3,7 @@ package com.anishek.pattern2;
 import com.anishek.Constants;
 import com.anishek.threading.RunnerFactory;
 import com.anishek.threading.Threaded;
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.HostDistance;
-import com.datastax.driver.core.PoolingOptions;
-import com.datastax.driver.core.Session;
+import com.datastax.driver.core.*;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -33,13 +30,15 @@ public class CassandraBitTables {
         }
 
         PoolingOptions poolingOptions = new PoolingOptions();
-        poolingOptions.setMaxConnectionsPerHost(HostDistance.LOCAL, 30);
-        poolingOptions.setCoreConnectionsPerHost(HostDistance.LOCAL, 30);
-        poolingOptions.setMaxConnectionsPerHost(HostDistance.REMOTE, 30);
-        poolingOptions.setCoreConnectionsPerHost(HostDistance.REMOTE, 30);
+        poolingOptions.setMaxConnectionsPerHost(HostDistance.LOCAL, 3);
+        poolingOptions.setCoreConnectionsPerHost(HostDistance.LOCAL, 3);
+        poolingOptions.setMaxConnectionsPerHost(HostDistance.REMOTE, 3);
+        poolingOptions.setCoreConnectionsPerHost(HostDistance.REMOTE, 3);
+
         cluster = builder
                 .withPoolingOptions(poolingOptions)
                 .addContactPoint("localhost")
+                .withSocketOptions(new SocketOptions().setTcpNoDelay(true))
                 .build();
     }
 
@@ -63,7 +62,7 @@ public class CassandraBitTables {
     public void insertData() throws Exception {
         recreateKeyspace();
         Session session = cluster.connect("test");
-        int NUM_OF_THREADS = 25;
+        int NUM_OF_THREADS = 50;
         long NUM_OF_KEYS = 100000000;
         HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.SESSION, session);
