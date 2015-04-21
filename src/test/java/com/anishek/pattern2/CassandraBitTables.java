@@ -38,7 +38,7 @@ public class CassandraBitTables {
         cluster = builder
                 .withPoolingOptions(poolingOptions)
                 .addContactPoint("localhost")
-                .withSocketOptions(new SocketOptions().setTcpNoDelay(true))
+                .withSocketOptions(new SocketOptions().setTcpNoDelay(true).setKeepAlive(true))
                 .build();
     }
 
@@ -74,7 +74,7 @@ public class CassandraBitTables {
         for (BitInsertRunnable.Callback callback : callbacks) {
             sum += callback.timeTakenInMilliSeconds;
         }
-        System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_THREADS));
+        System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_KEYS));
     }
 
     @Test
