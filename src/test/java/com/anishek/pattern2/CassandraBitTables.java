@@ -74,6 +74,7 @@ public class CassandraBitTables {
         for (BitInsertRunnable.Callback callback : callbacks) {
             sum += callback.timeTakenInMilliSeconds;
         }
+        session.close();
         System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_KEYS));
     }
 
@@ -91,9 +92,22 @@ public class CassandraBitTables {
         for (BitInsertRunnable.Callback callback : callbacks) {
             sum += callback.timeTakenInMilliSeconds;
         }
+        session.close();
         System.out.println("One read across " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_THREADS) + " ms");
     }
 
+    @Test
+    public void printAllHosts() {
+        System.out.println("Metadata hosts:");
+        for (Host host : cluster.getMetadata().getAllHosts()) {
+            System.out.println(host.getAddress());
+        }
+        System.out.println("Connected hosts:");
+        for (Host host : cluster.connect().getState().getConnectedHosts()) {
+            System.out.println(host.getAddress());
+        }
+
+    }
 
     private Collection<String> contactPoints() {
         String value = System.getProperty(CONFIG_FILE_KEY);
