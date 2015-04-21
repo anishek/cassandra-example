@@ -63,16 +63,16 @@ public class CassandraBitTables {
     public void insertData() throws Exception {
         recreateKeyspace();
         Session session = cluster.connect("test");
-        int NUM_OF_THREADS = 75;
+        int NUM_OF_THREADS = 50;
         long NUM_OF_KEYS = 100000000;
         HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.SESSION, session);
 
         Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(BitInsertRunnable.class, otherArguments));
-        List<BitInsertRunnable.Callback> callbacks = threaded.run(new BitInsertRunnable.Callback());
+        List<Callback> callbacks = threaded.run(new Callback<Long>());
         double sum = 0;
-        for (BitInsertRunnable.Callback callback : callbacks) {
-            sum += callback.timeTakenInMilliSeconds;
+        for (Callback<Long> callback : callbacks) {
+            sum += callback.data;
         }
         session.close();
         System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_KEYS));
@@ -83,17 +83,21 @@ public class CassandraBitTables {
         Session session = cluster.connect("test");
         int NUM_OF_THREADS = 25;
         long NUM_OF_KEYS = 100000000;
+        long THRESHOLD_MILLIS = 20;
         HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.SESSION, session);
         otherArguments.put(Constants.TOTAL_PARTITION_KEYS, NUM_OF_KEYS);
+        otherArguments.put(Constants.TIME_THRESHOLD_IN_MILLIS, THRESHOLD_MILLIS);
         Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(BitReadRunnable.class, otherArguments));
-        List<BitInsertRunnable.Callback> callbacks = threaded.run(new BitInsertRunnable.Callback());
+        List<Callback> callbacks = threaded.run(new Callback<BitReadRunnable.ReadCallable>());
         long sum = 0;
-        for (BitInsertRunnable.Callback callback : callbacks) {
-            sum += callback.timeTakenInMilliSeconds;
+        for (Callback<BitReadRunnable.ReadCallable> callback : callbacks) {
+            System.out.println("Per Record Average Read time = " + callback.data.timeTaken / callback.data.numberOfRuns);
+            System.out.println("Above Threshold of = " + THRESHOLD_MILLIS + " count is :" + callback.data.countAboveThreshold);
+            sum += callback.data.timeTaken / callback.data.numberOfRuns;
         }
-        session.close();
         System.out.println("One read across " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_THREADS) + " ms");
+        session.close();
     }
 
     @Test

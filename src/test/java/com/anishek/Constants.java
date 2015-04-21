@@ -11,4 +11,5 @@ public interface Constants {
     String COLUMN_STRUCTURE = "columnStructure";
 
     int BITS = 100;
+    String TIME_THRESHOLD_IN_MILLIS = "time.threshold";
 }
