@@ -61,7 +61,7 @@ public class CassandraBitTables {
 
     @Test
     public void insertData() throws Exception {
-//        recreateKeyspace();
+        recreateKeyspace();
         Session session = cluster.connect("test");
         int NUM_OF_THREADS = 25;
         long NUM_OF_KEYS = 100000000;
@@ -91,7 +91,7 @@ public class CassandraBitTables {
         for (BitInsertRunnable.Callback callback : callbacks) {
             sum += callback.timeTakenInMilliSeconds;
         }
-        System.out.println("One read across " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_THREADS));
+        System.out.println("One read across " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_THREADS) + " ms");
     }
 
 
