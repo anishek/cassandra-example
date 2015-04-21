@@ -42,10 +42,11 @@ public class CassandraBitTables {
                 .build();
     }
 
-    private void recreateKeyspace() {
+    private void recreateKeyspace() throws InterruptedException {
         Session session = cluster.connect();
         try {
             assertTrue(session.execute("drop keyspace test;").wasApplied());
+            Thread.sleep(2000l);
         } catch (InvalidQueryException exception) {
         }
         assertTrue(session.execute("create keyspace test with replication = {'class': 'NetworkTopologyStrategy', 'WDC' : 3};").wasApplied());
