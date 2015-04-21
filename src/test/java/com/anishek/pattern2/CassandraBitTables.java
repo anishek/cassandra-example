@@ -91,7 +91,7 @@ public class CassandraBitTables {
         for (BitInsertRunnable.Callback callback : callbacks) {
             sum += callback.timeTakenInMilliSeconds;
         }
-        System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_KEYS));
+        System.out.println("One read across " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_THREADS));
     }
 
 
