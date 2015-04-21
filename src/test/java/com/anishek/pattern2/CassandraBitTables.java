@@ -84,6 +84,7 @@ public class CassandraBitTables {
         int NUM_OF_KEYS = 100000000;
         HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.SESSION, session);
+        otherArguments.put(Constants.TOTAL_PARTITION_KEYS, NUM_OF_KEYS);
         Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(BitReadRunnable.class, otherArguments));
         List<BitInsertRunnable.Callback> callbacks = threaded.run(new BitInsertRunnable.Callback());
         long sum = 0;
