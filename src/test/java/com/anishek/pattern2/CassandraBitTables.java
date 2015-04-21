@@ -77,6 +77,23 @@ public class CassandraBitTables {
         System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_KEYS));
     }
 
+    @Test
+    public void read() throws Exception {
+        Session session = cluster.connect("test");
+        int NUM_OF_THREADS = 25;
+        int NUM_OF_KEYS = 100000000;
+        HashMap<String, Object> otherArguments = new HashMap<>();
+        otherArguments.put(Constants.SESSION, session);
+        Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(BitReadRunnable.class, otherArguments));
+        List<BitInsertRunnable.Callback> callbacks = threaded.run(new BitInsertRunnable.Callback());
+        long sum = 0;
+        for (BitInsertRunnable.Callback callback : callbacks) {
+            sum += callback.timeTakenInMilliSeconds;
+        }
+        System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_KEYS));
+    }
+
+
     private Collection<String> contactPoints() {
         String value = System.getProperty(CONFIG_FILE_KEY);
         return Collections2.transform(Arrays.asList(value.split(",")), new Function<String, String>() {
