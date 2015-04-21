@@ -30,10 +30,10 @@ public class CassandraBitTables {
         }
 
         PoolingOptions poolingOptions = new PoolingOptions();
-        poolingOptions.setMaxConnectionsPerHost(HostDistance.LOCAL, 3);
         poolingOptions.setCoreConnectionsPerHost(HostDistance.LOCAL, 3);
-        poolingOptions.setMaxConnectionsPerHost(HostDistance.REMOTE, 3);
+        poolingOptions.setMaxConnectionsPerHost(HostDistance.LOCAL, 3);
         poolingOptions.setCoreConnectionsPerHost(HostDistance.REMOTE, 3);
+        poolingOptions.setMaxConnectionsPerHost(HostDistance.REMOTE, 3);
 
         cluster = builder
                 .withPoolingOptions(poolingOptions)
