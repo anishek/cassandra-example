@@ -46,6 +46,6 @@ public class BitReadRunnable implements Callable<BitReadRunnable.ReadCallable> {
     public static class ReadCallable {
         public long countAboveThreshold = 0;
         public long timeTaken = 0;
-        public long numberOfRuns = 10000;
+        public long numberOfRuns = 100000;
     }
 }
