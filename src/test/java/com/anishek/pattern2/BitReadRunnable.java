@@ -1,8 +1,10 @@
 package com.anishek.pattern2;
 
 import com.anishek.Constants;
+import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.google.common.base.Stopwatch;
@@ -30,9 +32,9 @@ public class BitReadRunnable implements Callable<BitReadRunnable.ReadCallable> {
         ReadCallable readCallable = new ReadCallable();
         for (long i = 0; i < readCallable.numberOfRuns; i++) {
             Long key = new Double(random.nextFloat() * totalKeySpace).longValue();
-            Select.Where select = QueryBuilder.select().all().from("segments").where(QueryBuilder.eq("id", key));
+            Statement statement = QueryBuilder.select().all().from("segments").where(QueryBuilder.eq("id", key)).setConsistencyLevel(ConsistencyLevel.LOCAL_ONE);
             Stopwatch started = Stopwatch.createStarted();
-            ResultSet execute = session.execute(select);
+            ResultSet execute = session.execute(statement);
             execute.iterator().next();
             long elapsed = started.elapsed(TimeUnit.MILLISECONDS);
             if (elapsed > timeThreshold) {
