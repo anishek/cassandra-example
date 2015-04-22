@@ -34,7 +34,7 @@ public class BitReadRunnable implements Callable<BitReadRunnable.ReadCallable> {
             Stopwatch started = Stopwatch.createStarted();
             ResultSet execute = session.execute(select);
             execute.iterator().next();
-            long elapsed = started.elapsed(TimeUnit.MICROSECONDS);
+            long elapsed = started.elapsed(TimeUnit.MILLISECONDS);
             if (elapsed > timeThreshold) {
                 readCallable.countAboveThreshold++;
             }
