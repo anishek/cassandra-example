@@ -90,13 +90,15 @@ public class CassandraBitTables {
         otherArguments.put(Constants.TIME_THRESHOLD_IN_MILLIS, THRESHOLD_MILLIS);
         Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(BitReadRunnable.class, otherArguments));
         List<Callback> callbacks = threaded.run(new Callback<BitReadRunnable.ReadCallable>());
-        long sum = 0;
+        long averageTimeTaken = 0;
+        long aboveThreshold = 0;
         for (Callback<BitReadRunnable.ReadCallable> callback : callbacks) {
             System.out.println("Per Record Average Read time = " + callback.data.timeTaken / callback.data.numberOfRuns);
             System.out.println("Above Threshold of = " + THRESHOLD_MILLIS + " count is :" + callback.data.countAboveThreshold);
-            sum += callback.data.timeTaken / callback.data.numberOfRuns;
+            averageTimeTaken += callback.data.timeTaken / callback.data.numberOfRuns;
+            aboveThreshold += callback.data.countAboveThreshold;
         }
-        System.out.println("One read across " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_THREADS) + " ms");
+        System.out.println("One read across " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (averageTimeTaken / NUM_OF_THREADS) + " ms, with total above threshold: " + aboveThreshold);
         session.close();
     }
 
