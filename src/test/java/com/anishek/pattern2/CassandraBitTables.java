@@ -54,7 +54,8 @@ public class CassandraBitTables {
         session = cluster.connect("test");
         assertTrue(session.execute(" CREATE TABLE segments(id bigint primary key , segment_bits text) " +
                 "with gc_grace_seconds=0 " +
-                "and compaction = {'class': 'LeveledCompactionStrategy'} " +
+                "and bloom_filter_fp_chance=0.01" +
+                "and compaction = {'class': 'LeveledCompactionStrategy', 'sstable_size_in_mb' : 240} " +
                 "and compression={'sstable_compression' : ''};").wasApplied());
         session.close();
     }
