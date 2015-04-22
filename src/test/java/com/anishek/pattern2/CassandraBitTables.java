@@ -75,7 +75,7 @@ public class CassandraBitTables {
             sum += callback.data;
         }
         session.close();
-        System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_KEYS));
+        System.out.println("One insert for " + NUM_OF_KEYS + " keys across " + NUM_OF_THREADS + " threads : " + (sum / NUM_OF_THREADS));
     }
 
     @Test
