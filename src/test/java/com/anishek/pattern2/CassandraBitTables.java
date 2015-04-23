@@ -52,7 +52,7 @@ public class CassandraBitTables {
         assertTrue(session.execute("create keyspace test with replication = {'class': 'NetworkTopologyStrategy', 'WDC' : 3};").wasApplied());
         session.close();
         session = cluster.connect("test");
-        assertTrue(session.execute(" CREATE TABLE segments(id bigint , ts timestamp, segment_bits text, primary key (id, ts)) with clustering order by (ts desc)" +
+        assertTrue(session.execute(" CREATE TABLE segments(id bigint , ts timestamp, segment_bits text, primary key (id, ts)) with clustering order by (ts desc) " +
                 "with gc_grace_seconds=0 " +
                 "and compaction = {'class': 'DateTieredCompactionStrategy', 'timestamp_resolution':'SECONDS', 'base_time_seconds':'20', 'max_sstable_age_days':'0.5'} " +
                 "and compression={'sstable_compression' : ''};").wasApplied());
