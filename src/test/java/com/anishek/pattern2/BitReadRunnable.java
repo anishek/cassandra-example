@@ -6,9 +6,9 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
-import com.datastax.driver.core.querybuilder.Select;
 import com.google.common.base.Stopwatch;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -32,7 +32,9 @@ public class BitReadRunnable implements Callable<BitReadRunnable.ReadCallable> {
         ReadCallable readCallable = new ReadCallable();
         for (long i = 0; i < readCallable.numberOfRuns; i++) {
             Long key = new Double(random.nextFloat() * totalKeySpace).longValue();
-            Statement statement = QueryBuilder.select().all().from("segments").where(QueryBuilder.eq("id", key)).setConsistencyLevel(ConsistencyLevel.LOCAL_ONE);
+            Statement statement = QueryBuilder.select().column("ts").from("segments")
+                    .where(QueryBuilder.eq("id", key)).and(QueryBuilder.lt("ts", new Date()))
+                    .limit(1).setFetchSize(1).setConsistencyLevel(ConsistencyLevel.LOCAL_ONE);
             Stopwatch started = Stopwatch.createStarted();
             ResultSet execute = session.execute(statement);
             execute.iterator().next();

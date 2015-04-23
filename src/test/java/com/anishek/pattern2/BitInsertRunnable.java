@@ -8,6 +8,7 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.FutureCallback;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +32,7 @@ public class BitInsertRunnable implements Callable<Long> {
         for (long i = start; i < stop; i++) {
             Statement statement = QueryBuilder.insertInto("test", "segments")
                     .value("id", i)
+                    .value("ts", new Date())
                     .value("segment_bits", randomValue.next()).setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM);
             session.execute(statement);
         }
