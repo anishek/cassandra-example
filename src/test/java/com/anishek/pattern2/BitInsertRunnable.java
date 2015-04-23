@@ -33,7 +33,7 @@ public class BitInsertRunnable implements Callable<Long> {
             Statement statement = QueryBuilder.insertInto("test", "segments")
                     .value("id", i)
                     .value("ts", new Date())
-                    .value("segment_bits", randomValue.next()).setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM);
+                    .value("segment_bits", randomValue.next()).setConsistencyLevel(ConsistencyLevel.ONE);
             session.execute(statement);
         }
         return stopwatch.elapsed(TimeUnit.MILLISECONDS) / (stop - start);
