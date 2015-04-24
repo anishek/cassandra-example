@@ -82,9 +82,9 @@ public class CassandraBitTables {
     @Test
     public void read() throws Exception {
         Session session = cluster.connect("test");
-        int NUM_OF_THREADS = 20;
+        int NUM_OF_THREADS = 25;
         long NUM_OF_KEYS = 1000000;
-        long THRESHOLD_MILLIS = 25;
+        long THRESHOLD_MILLIS = 20;
         HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.SESSION, session);
         otherArguments.put(Constants.TOTAL_PARTITION_KEYS, NUM_OF_KEYS);
