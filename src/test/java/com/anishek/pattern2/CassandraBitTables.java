@@ -51,8 +51,8 @@ public class CassandraBitTables {
             Thread.sleep(2000l);
         } catch (InvalidQueryException exception) {
         }
-//        assertTrue(session.execute("create keyspace test with replication = {'class': 'NetworkTopologyStrategy', 'WDC' : 3};").wasApplied());
-        assertTrue(session.execute("create keyspace test with replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};").wasApplied());
+        assertTrue(session.execute("create keyspace test with replication = {'class': 'NetworkTopologyStrategy', 'WDC' : 3};").wasApplied());
+//        assertTrue(session.execute("create keyspace test with replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};").wasApplied());
         session.close();
         session = cluster.connect("test");
         assertTrue(session.execute(" CREATE TABLE segments(id bigint , ts timestamp, segment_bits text, primary key (id, ts)) with clustering order by (ts desc) " +
