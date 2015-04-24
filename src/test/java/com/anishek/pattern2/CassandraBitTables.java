@@ -20,6 +20,8 @@ import static org.junit.Assert.assertTrue;
 public class CassandraBitTables {
 
     String CONFIG_FILE_KEY = "contact.points";
+    String KEY_SPACE = "key.space";
+    String NUM_THREADS = "num.threads";
     private Cluster cluster;
 
     @Before
@@ -64,8 +66,8 @@ public class CassandraBitTables {
     public void insertData() throws Exception {
         recreateKeyspace();
         Session session = cluster.connect("test");
-        int NUM_OF_THREADS = 25;
-        long NUM_OF_KEYS = 100000000;
+        int NUM_OF_THREADS = Integer.parseInt(System.getProperty(NUM_THREADS));
+        long NUM_OF_KEYS = Long.parseLong(System.getProperty(KEY_SPACE));
         HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.SESSION, session);
 
@@ -82,8 +84,8 @@ public class CassandraBitTables {
     @Test
     public void read() throws Exception {
         Session session = cluster.connect("test");
-        int NUM_OF_THREADS = 25;
-        long NUM_OF_KEYS = 100000000;
+        int NUM_OF_THREADS = Integer.parseInt(System.getProperty(NUM_THREADS));;
+        long NUM_OF_KEYS = Long.parseLong(System.getProperty(KEY_SPACE));;
         long THRESHOLD_MILLIS = 20;
         HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.SESSION, session);
