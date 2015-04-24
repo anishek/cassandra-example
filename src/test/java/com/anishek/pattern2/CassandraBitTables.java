@@ -65,7 +65,7 @@ public class CassandraBitTables {
         recreateKeyspace();
         Session session = cluster.connect("test");
         int NUM_OF_THREADS = 25;
-        long NUM_OF_KEYS = 10000000;
+        long NUM_OF_KEYS = 100000000;
         HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.SESSION, session);
 
