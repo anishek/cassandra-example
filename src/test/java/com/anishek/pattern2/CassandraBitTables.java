@@ -57,7 +57,6 @@ public class CassandraBitTables {
         session = cluster.connect("test");
         assertTrue(session.execute(" CREATE TABLE segments(id bigint , ts timestamp, segment_bits text, primary key (id, ts)) with clustering order by (ts desc) " +
                 "and gc_grace_seconds=0 " +
-                "and compaction = {'class': 'DateTieredCompactionStrategy', 'timestamp_resolution':'SECONDS', 'base_time_seconds':'20', 'max_sstable_age_days':'0.5'} " +
                 "and compression={'sstable_compression' : ''};").wasApplied());
         session.close();
     }
