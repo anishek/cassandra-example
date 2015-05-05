@@ -19,8 +19,8 @@ import static org.junit.Assert.assertTrue;
 
 public class CassandraBitTables {
 
-    String CONFIG_FILE_KEY = "contact.points";
-    String KEY_SPACE = "key.space";
+    String CONTACT_POINTS_KEY = "contact.points";
+    String NUM_PARTITIONS = "num.partitions";
     String NUM_THREADS = "num.threads";
     private Cluster cluster;
 
@@ -67,7 +67,7 @@ public class CassandraBitTables {
         recreateKeyspace();
         Session session = cluster.connect("test");
         int NUM_OF_THREADS = Integer.parseInt(System.getProperty(NUM_THREADS));
-        long NUM_OF_KEYS = Long.parseLong(System.getProperty(KEY_SPACE));
+        long NUM_OF_KEYS = Long.parseLong(System.getProperty(NUM_PARTITIONS));
         HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.SESSION, session);
 
@@ -86,7 +86,7 @@ public class CassandraBitTables {
         Session session = cluster.connect("test");
         int NUM_OF_THREADS = Integer.parseInt(System.getProperty(NUM_THREADS));
         ;
-        long NUM_OF_KEYS = Long.parseLong(System.getProperty(KEY_SPACE));
+        long NUM_OF_KEYS = Long.parseLong(System.getProperty(NUM_PARTITIONS));
         ;
         long THRESHOLD_MILLIS = 20;
         HashMap<String, Object> otherArguments = new HashMap<>();
@@ -121,7 +121,7 @@ public class CassandraBitTables {
     }
 
     private Collection<String> contactPoints() {
-        String value = System.getProperty(CONFIG_FILE_KEY);
+        String value = System.getProperty(CONTACT_POINTS_KEY);
         return Collections2.transform(Arrays.asList(value.split(",")), new Function<String, String>() {
             @Override
             public String apply(String s) {
