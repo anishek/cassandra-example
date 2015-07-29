@@ -35,9 +35,11 @@ public class InsertRunnable implements Callable<Long> {
     @Override
     public Long call() throws Exception {
         Stopwatch stopwatch = Stopwatch.createStarted();
+        Stopwatch intermediate = Stopwatch.createStarted();
         for (long i = start; i < stop; i++) {
             if ((i - start) % 10000 == 0) {
-                System.out.println(Thread.currentThread().getName() + " : " + i);
+                System.out.println(Thread.currentThread().getName() + " : " + i +" : time(millisec) : " + intermediate.elapsed(TimeUnit.MILLISECONDS));
+                intermediate.reset();
             }
             HashMap<String, String> attributes = new HashMap<>();
             attributes.put("a", "AAAA");
