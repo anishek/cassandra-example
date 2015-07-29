@@ -23,7 +23,7 @@ public class Threaded {
                 Executors.newFixedThreadPool(numberOfThreads,
                         new ThreadFactoryBuilder().setNameFormat("%d").build()
                 ));
-        List<FutureCallback> list = new ArrayList<FutureCallback>();
+        List<FutureCallback> list = new ArrayList<>();
 
         long perThread = totalNumber / numberOfThreads;
         for (int i = 0; i < numberOfThreads; i++) {

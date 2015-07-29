@@ -52,8 +52,8 @@ public class CassandraTables {
         long NUM_OF_KEYS = Long.parseLong(System.getProperty(NUM_PARTITIONS));
 
         HashMap<String, Object> otherArguments = new HashMap<>();
-        otherArguments.put(InsertRunnable.TTL, Long.parseLong(System.getProperty(InsertRunnable.TTL)));
-        otherArguments.put(InsertRunnable.SEGMENTS_TTL, Long.parseLong(System.getProperty(InsertRunnable.SEGMENTS_TTL)));
+        otherArguments.put(InsertRunnable.TTL, Integer.parseInt(System.getProperty(InsertRunnable.TTL)));
+        otherArguments.put(InsertRunnable.SEGMENTS_TTL, Integer.parseInt(System.getProperty(InsertRunnable.SEGMENTS_TTL)));
         otherArguments.put(Constants.SESSION, session);
         Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(InsertRunnable.class, otherArguments));
         List run = threaded.run(new Callback<Long>());
