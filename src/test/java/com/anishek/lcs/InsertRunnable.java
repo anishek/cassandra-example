@@ -44,19 +44,20 @@ public class InsertRunnable implements Callable<Long> {
             attributes.put("b", "BBBBBB");
             Statement statement = QueryBuilder.insertInto("activity_log", "test")
                     .value("id", i)
-                    .value("client_id", i % 10)
+                    .value("client_id", 11)
                     .value("attributes", attributes)
                     .using(QueryBuilder.ttl(attributesTTL))
                     .setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM);
             session.execute(statement);
-
-            statement = QueryBuilder.insertInto("activity_log", "test")
-                    .value("id", i)
-                    .value("client_id", i % 10)
-                    .value("segments", segments())
-                    .using(QueryBuilder.ttl(this.segmentsTTL))
-                    .setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM);
-            session.execute(statement);
+            for (int j = 0; j < 10; j++) {
+                statement = QueryBuilder.insertInto("activity_log", "test")
+                        .value("id", i)
+                        .value("client_id", i % 10)
+                        .value("segments", segments())
+                        .using(QueryBuilder.ttl(this.segmentsTTL))
+                        .setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM);
+                session.execute(statement);
+            }
         }
         return stopwatch.elapsed(TimeUnit.MICROSECONDS);
     }
