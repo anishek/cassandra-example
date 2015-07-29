@@ -44,7 +44,7 @@ public class CollectionsTest {
         session.execute("insert into test(id) values (1)");
 
         for (int i = 0; i < ELEMENTS_LIMIT_64K; i++) {
-            session.execute("update test set col = col + {" + i + "}");
+            session.execute("update test set col = col + {" + i + "} where id = 1;");
         }
         session.close();
     }
