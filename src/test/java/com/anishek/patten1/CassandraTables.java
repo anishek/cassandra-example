@@ -243,8 +243,6 @@ public class CassandraTables {
 
     /**
      * This test can be used to create the problem of too many tombstones and out of memory errors in cassandra
-     *
-     * @throws Exception
      */
     @Test
     public void insertMultipleColumnsWith_TTL_AndRead() throws Exception {

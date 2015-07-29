@@ -36,6 +36,9 @@ public class CollectionsTest {
     }
 
 
+    /**
+     * cassandra read times out, don't think we can test the loss of values beyond 64k elements as defined by doc.
+     */
     @Test
     public void limitOfItemsInCollections() {
         Session session = localhost.connect("activity_log");
