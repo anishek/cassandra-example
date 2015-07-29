@@ -19,7 +19,7 @@ create table test (all_spark_id bigint, client_id bigint, attributes map<text, t
 public class CollectionsTest {
 
     public static final int ELEMENTS_LIMIT_64K = 64 * 1024 * 1024;
-    private static final String CONTACT_POINTS = "contact.points";
+    private static final String CONTACT_POINT = "contact.point";
     private Cluster localhost;
 
     @Before
@@ -27,11 +27,11 @@ public class CollectionsTest {
         PoolingOptions poolingOptions = new PoolingOptions();
         poolingOptions.setMaxConnectionsPerHost(HostDistance.LOCAL, 30);
         poolingOptions.setCoreConnectionsPerHost(HostDistance.LOCAL, 30);
-        String contactPoints = System.getProperty(CONTACT_POINTS);
-        System.out.println("using contact points: " + contactPoints);
+        String contactPoint = System.getProperty(CONTACT_POINT);
+        System.out.println("using contact point: " + contactPoint);
         localhost = Cluster.builder()
                 .withPoolingOptions(poolingOptions)
-                .addContactPoints(contactPoints)
+                .addContactPoint(contactPoint)
                 .build();
     }
 
