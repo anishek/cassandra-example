@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-public class InsertRunnable implements Callable<Long> {
+public class SingleInsertRunnable implements Callable<Long> {
     public static final String SEGMENTS_TTL = "sttl";
     public static final String TTL = "ttl";
 
@@ -23,7 +23,7 @@ public class InsertRunnable implements Callable<Long> {
     private Random random;
 
 
-    public InsertRunnable(long start, long stop, Map<String, Object> otherArguments) {
+    public SingleInsertRunnable(long start, long stop, Map<String, Object> otherArguments) {
         this.start = start;
         this.stop = stop;
         this.session = (Session) otherArguments.get(Constants.SESSION);
@@ -39,7 +39,7 @@ public class InsertRunnable implements Callable<Long> {
         for (long i = start; i < stop; i++) {
             if ((i - start) % 10000 == 0) {
                 System.out.println(Thread.currentThread().getName() + " : " + i +" : time(millisec) : " + intermediate.elapsed(TimeUnit.MILLISECONDS));
-                intermediate.reset();
+                intermediate.reset().start();
             }
             HashMap<String, String> attributes = new HashMap<>();
             attributes.put("a", "AAAA");
@@ -72,5 +72,4 @@ public class InsertRunnable implements Callable<Long> {
         }
         return segments;
     }
-
 }

@@ -1,7 +1,11 @@
 package com.anishek.lcs;
 
 /*
-create table test (id bigint, client_id bigint, attributes map<text, text> , segments set<text>,
+create table mtestone (id bigint, client_id bigint, attributes map<text, text>,
+primary key (id, client_id)) with clustering order by (client_id desc)
+AND compression={'sstable_compression' : 'SnappyCompressor'}  AND compaction = {'class': 'LeveledCompactionStrategy'} ;
+
+create table mtesttwo (id bigint, client_id bigint,  segments set<text>,
 primary key (id, client_id)) with clustering order by (client_id desc)
 AND compression={'sstable_compression' : 'SnappyCompressor'}  AND compaction = {'class': 'LeveledCompactionStrategy'} ;
  */
@@ -20,7 +24,12 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.List;
 
-public class CassandraTables {
+/**
+ * This is to populate a single table with sections of the table that will have
+ * mutually exclusive updates. segments and attributes are mutually exclusive per client
+ * though both have to be per user.
+ */
+public class MultipleTablesTest {
 
     private static final String CONTACT_POINT = "contact.point";
     private static final String NUM_THREADS = "num.threads";
@@ -52,17 +61,21 @@ public class CassandraTables {
         long NUM_OF_KEYS = Long.parseLong(System.getProperty(NUM_PARTITIONS));
 
         HashMap<String, Object> otherArguments = new HashMap<>();
-        otherArguments.put(InsertRunnable.TTL, Integer.parseInt(System.getProperty(InsertRunnable.TTL)));
-        otherArguments.put(InsertRunnable.SEGMENTS_TTL, Integer.parseInt(System.getProperty(InsertRunnable.SEGMENTS_TTL)));
+        otherArguments.put(SingleInsertRunnable.TTL, Integer.parseInt(System.getProperty(SingleInsertRunnable.TTL)));
+        otherArguments.put(SingleInsertRunnable.SEGMENTS_TTL, Integer.parseInt(System.getProperty(SingleInsertRunnable.SEGMENTS_TTL)));
         otherArguments.put(Constants.SESSION, session);
-        Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(InsertRunnable.class, otherArguments));
+        Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(MultipleInsertRunnable.class, otherArguments));
         List run = threaded.run(new Callback<Long>());
 
     }
 
     private void recreateTable() {
-        session.execute("drop table test");
-        session.execute("create table test (id bigint, client_id bigint, attributes map<text, text> , segments set<text>," +
+        session.execute("drop table mtestone;");
+        session.execute("drop table mtesttwo;");
+        session.execute("create table mtestone (id bigint, client_id bigint, attributes map<text, text>," +
+                "primary key (id, client_id)) with clustering order by (client_id desc)" +
+                "AND compression={'sstable_compression' : 'SnappyCompressor'}  AND compaction = {'class': 'LeveledCompactionStrategy'} ;");
+        session.execute("create table mtesttwo (id bigint, client_id bigint,  segments set<text>," +
                 "primary key (id, client_id)) with clustering order by (client_id desc)" +
                 "AND compression={'sstable_compression' : 'SnappyCompressor'}  AND compaction = {'class': 'LeveledCompactionStrategy'} ;");
     }
