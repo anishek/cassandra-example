@@ -36,7 +36,7 @@ public class SingleInsertRunnable implements Callable<Long> {
         Stopwatch intermediate = Stopwatch.createStarted();
         for (long i = start; i < stop; i++) {
             if ((i - start) % 10000 == 0 && i != start) {
-                System.out.println(Thread.currentThread().getName() + " : " + i + " : time(millisec) : " + intermediate.elapsed(TimeUnit.MILLISECONDS));
+                System.out.println(Thread.currentThread().getName() + " : " + i + " : time(micro sec) : " + intermediate.elapsed(TimeUnit.MILLISECONDS));
                 intermediate.reset().start();
             }
             HashMap<String, String> attributes = new HashMap<>();

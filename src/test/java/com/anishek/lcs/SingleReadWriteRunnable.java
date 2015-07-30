@@ -62,7 +62,7 @@ public class SingleReadWriteRunnable implements Callable<Long> {
             }
         }
         long elapsed = stopwatch.elapsed(TimeUnit.MICROSECONDS);
-        System.out.println(Thread.currentThread().getName() + " : time(millisec) : " + elapsed);
+        System.out.println(Thread.currentThread().getName() + " : time(micro sec) : " + elapsed);
         return elapsed;
     }
 
