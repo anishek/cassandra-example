@@ -67,7 +67,7 @@ public class SingleTableTest {
     }
 
     private void recreateTable() {
-        session.execute("drop table test");
+        session.execute("drop table if exists test");
         session.execute("create table test (id bigint, client_id bigint, attributes map<text, text> , segments set<text>," +
                 "primary key (id, client_id)) with clustering order by (client_id desc)" +
                 "AND compression={'sstable_compression' : 'SnappyCompressor'}  AND compaction = {'class': 'LeveledCompactionStrategy'} ;");

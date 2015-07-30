@@ -70,8 +70,8 @@ public class MultipleTablesTest {
     }
 
     private void recreateTable() {
-        session.execute("drop table mtestone;");
-        session.execute("drop table mtesttwo;");
+        session.execute("drop table if exists mtestone;");
+        session.execute("drop table if exists mtesttwo;");
         session.execute("create table mtestone (id bigint, client_id bigint, attributes map<text, text>," +
                 "primary key (id, client_id)) with clustering order by (client_id desc)" +
                 "AND compression={'sstable_compression' : 'SnappyCompressor'}  AND compaction = {'class': 'LeveledCompactionStrategy'} ;");
