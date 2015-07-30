@@ -50,7 +50,7 @@ public class SingleTableReadWriteTest {
     }
 
     @Test
-    public void populateTTLedValuesForSpecifiedNumberOfIds() throws Exception {
+    public void doReadWrite() throws Exception {
 
         if (Boolean.parseBoolean(System.getProperty("recreate.table"))) {
             recreateTable();
