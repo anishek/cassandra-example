@@ -37,8 +37,8 @@ public class MultipleInsertRunnable implements Callable<Long> {
         Stopwatch stopwatch = Stopwatch.createStarted();
         Stopwatch intermediate = Stopwatch.createStarted();
         for (long i = start; i < stop; i++) {
-            if ((i - start) % 10000 == 0) {
-                System.out.println(Thread.currentThread().getName() + " : " + i +" : time(millisec) : " + intermediate.elapsed(TimeUnit.MILLISECONDS));
+            if ((i - start) % 10000 == 0 && i != 0) {
+                System.out.println(Thread.currentThread().getName() + " : " + i + " : time(millisec) : " + intermediate.elapsed(TimeUnit.MILLISECONDS));
                 intermediate.reset().start();
             }
             HashMap<String, String> attributes = new HashMap<>();
