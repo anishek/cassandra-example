@@ -7,50 +7,52 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.base.Stopwatch;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-public class SingleInsertRunnable implements Callable<Long> {
+public class SingleReadWriteRunnable implements Callable<Long> {
+    public static final String SEGMENTS_TTL = "sttl";
+    public static final String TTL = "ttl";
 
     private final long start;
     private final long stop;
     private final Session session;
     private final int segmentsTTL;
-    private final int attributesTTL;
+    private final double writePercentage = 0.2d;
+    private final long keySpace;
     private Random random;
 
 
-    public SingleInsertRunnable(long start, long stop, Map<String, Object> otherArguments) {
+    public SingleReadWriteRunnable(long start, long stop, Map<String, Object> otherArguments) {
         this.start = start;
         this.stop = stop;
         this.session = (Session) otherArguments.get(Constants.SESSION);
-        this.segmentsTTL = (int) otherArguments.get(Constants.SEGMENTS_TTL);
-        this.attributesTTL = (int) otherArguments.get(Constants.TTL);
+        this.segmentsTTL = (int) otherArguments.get(SEGMENTS_TTL);
+        this.keySpace = (long) otherArguments.get(SingleTableReadWriteTest.NUM_PARTITIONS);
         this.random = new Random(System.nanoTime());
     }
 
     @Override
     public Long call() throws Exception {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        Stopwatch intermediate = Stopwatch.createStarted();
         for (long i = start; i < stop; i++) {
-            if ((i - start) % 10000 == 0 && i != start) {
-                System.out.println(Thread.currentThread().getName() + " : " + i + " : time(millisec) : " + intermediate.elapsed(TimeUnit.MILLISECONDS));
-                intermediate.reset().start();
-            }
-            HashMap<String, String> attributes = new HashMap<>();
-            attributes.put("a", "AAAA");
-            attributes.put("b", "BBBBBB");
-            Statement statement = QueryBuilder.insertInto("activity_log", "test")
-                    .value("id", i)
-                    .value("client_id", 11)
-                    .value("attributes", attributes)
-                    .using(QueryBuilder.ttl(attributesTTL))
+
+            Statement select = QueryBuilder.select()
+                    .column("segments")
+                    .from("test")
+                    .where(QueryBuilder.eq("id", Math.round(keySpace * random.nextDouble())))
+                    .and(QueryBuilder.eq("client_id", random.nextInt(11)))
                     .setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM);
-            session.execute(statement);
-            for (int j = 0; j < 10; j++) {
-                statement = QueryBuilder.insertInto("activity_log", "test")
+
+            session.execute(select);
+
+            if (random.nextDouble() > writePercentage) {
+
+                Statement statement = QueryBuilder.insertInto("activity_log", "test")
                         .value("id", i)
                         .value("client_id", i % 10)
                         .value("segments", segments())
@@ -59,7 +61,9 @@ public class SingleInsertRunnable implements Callable<Long> {
                 session.execute(statement);
             }
         }
-        return stopwatch.elapsed(TimeUnit.MICROSECONDS);
+        long elapsed = stopwatch.elapsed(TimeUnit.MICROSECONDS);
+        System.out.println(Thread.currentThread().getName() + " : time(millisec) : " + elapsed);
+        return elapsed;
     }
 
     private Set<String> segments() {

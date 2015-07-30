@@ -12,4 +12,7 @@ public interface Constants {
 
     int BITS = 100;
     String TIME_THRESHOLD_IN_MILLIS = "time.threshold";
+
+    String SEGMENTS_TTL = "sttl";
+    String TTL = "ttl";
 }

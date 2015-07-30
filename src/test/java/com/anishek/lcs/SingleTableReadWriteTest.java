@@ -26,11 +26,12 @@ import java.util.List;
  * though both have to be per user.
  * should be more efficient than MultipleTablesTest
  */
-public class SingleTableTest {
+public class SingleTableReadWriteTest {
 
     private static final String CONTACT_POINT = "contact.point";
     private static final String NUM_THREADS = "num.threads";
-    private static final String NUM_PARTITIONS = "num.partitions";
+    public static final String NUM_PARTITIONS = "num.partitions";
+    public static final String NUM_OPERATIONS = "operations";
     private Cluster cluster;
     private Session session;
 
@@ -54,14 +55,16 @@ public class SingleTableTest {
         if (Boolean.parseBoolean(System.getProperty("recreate.table"))) {
             recreateTable();
         }
-        int NUM_OF_THREADS = Integer.parseInt(System.getProperty(NUM_THREADS));
-        long NUM_OF_KEYS = Long.parseLong(System.getProperty(NUM_PARTITIONS));
+        int threads = Integer.parseInt(System.getProperty(NUM_THREADS));
+        long keys = Long.parseLong(System.getProperty(NUM_PARTITIONS));
+        long operations = Long.parseLong(System.getProperty(NUM_OPERATIONS));
 
         HashMap<String, Object> otherArguments = new HashMap<>();
         otherArguments.put(Constants.TTL, Integer.parseInt(System.getProperty(Constants.TTL)));
         otherArguments.put(Constants.SEGMENTS_TTL, Integer.parseInt(System.getProperty(Constants.SEGMENTS_TTL)));
         otherArguments.put(Constants.SESSION, session);
-        Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(SingleInsertRunnable.class, otherArguments));
+        otherArguments.put(NUM_PARTITIONS, keys);
+        Threaded threaded = new Threaded(operations, threads, new RunnerFactory(SingleReadWriteRunnable.class, otherArguments));
         List run = threaded.run(new Callback<Long>());
 
     }

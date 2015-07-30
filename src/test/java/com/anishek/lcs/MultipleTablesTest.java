@@ -61,8 +61,8 @@ public class MultipleTablesTest {
         long NUM_OF_KEYS = Long.parseLong(System.getProperty(NUM_PARTITIONS));
 
         HashMap<String, Object> otherArguments = new HashMap<>();
-        otherArguments.put(SingleInsertRunnable.TTL, Integer.parseInt(System.getProperty(SingleInsertRunnable.TTL)));
-        otherArguments.put(SingleInsertRunnable.SEGMENTS_TTL, Integer.parseInt(System.getProperty(SingleInsertRunnable.SEGMENTS_TTL)));
+        otherArguments.put(Constants.TTL, Integer.parseInt(System.getProperty(Constants.TTL)));
+        otherArguments.put(Constants.SEGMENTS_TTL, Integer.parseInt(System.getProperty(Constants.SEGMENTS_TTL)));
         otherArguments.put(Constants.SESSION, session);
         Threaded threaded = new Threaded(NUM_OF_KEYS, NUM_OF_THREADS, new RunnerFactory(MultipleInsertRunnable.class, otherArguments));
         List run = threaded.run(new Callback<Long>());
