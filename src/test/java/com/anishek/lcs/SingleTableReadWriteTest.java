@@ -51,10 +51,6 @@ public class SingleTableReadWriteTest {
 
     @Test
     public void doReadWrite() throws Exception {
-
-        if (Boolean.parseBoolean(System.getProperty("recreate.table"))) {
-            recreateTable();
-        }
         int threads = Integer.parseInt(System.getProperty(NUM_THREADS));
         long keys = Long.parseLong(System.getProperty(NUM_PARTITIONS));
         long operations = Long.parseLong(System.getProperty(NUM_OPERATIONS));
@@ -67,12 +63,5 @@ public class SingleTableReadWriteTest {
         Threaded threaded = new Threaded(operations, threads, new RunnerFactory(SingleReadWriteRunnable.class, otherArguments));
         List run = threaded.run(new Callback<Long>());
 
-    }
-
-    private void recreateTable() {
-        session.execute("drop table if exists test");
-        session.execute("create table test (id bigint, client_id bigint, attributes map<text, text> , segments set<text>," +
-                "primary key (id, client_id)) with clustering order by (client_id desc)" +
-                "AND compression={'sstable_compression' : 'SnappyCompressor'}  AND compaction = {'class': 'LeveledCompactionStrategy'} ;");
     }
 }
